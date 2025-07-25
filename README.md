@@ -25,6 +25,7 @@
 
 ## 📁 Cấu trúc dự án
 
+```text
 org.smart_job
 ├── common # Response wrapper dùng trong service
 ├── dao # DAO interface
@@ -34,7 +35,7 @@ org.smart_job
 │ └── impl # Service implementation
 ├── ulties # JdbcUtils và tiện ích khác
 └── view # Giao diện Swing (JFrame, JTable, etc.)
-
+```
 
 ## ⚙️ Cài đặt & chạy
 
@@ -42,13 +43,48 @@ org.smart_job
 
 - Java 11 trở lên
 - Maven
-- MySQL (tạo sẵn database `smartjob`)
+- MySQL (tạo sẵn database `uit_smart_job`)
 
-### 2. Cấu hình DB
+### 2. Cài đặt MySQL bằng Docker
+
+1. Cài đặt **Docker**
+2. Chạy command
+   ```bash
+    docker volume create mysql_data
+    docker compose up -d
+    ```
+   **Lưu ý**: root password là
+   ```text
+   123456
+   ```
+3. Truy cập vào MySQL bên trong container
+   ```bash
+   docker exec -it [container_id] mysql -uroot -p
+   ```
+4. Kiểm tra Database
+   ```mysql
+   SHOW DATABASES;
+   ```
+   Output như sau
+   ```text
+   mysql> SHOW DATABASES;
+   +--------------------+
+   | Database           |
+   +--------------------+
+   | information_schema |
+   | mysql              |
+   | performance_schema |
+   | sys                |
+   | uit_smart_job      |
+   +--------------------+
+   ```
+
+### 3. Cấu hình DB
 
 Mở file `JdbcUtils.java` và sửa thông tin:
 
 ```java
-private static final String URL = "jdbc:mysql://localhost:3306/smartjob";
+private static final String URL = "jdbc:mysql://localhost:3306/uit_smart_job";
 private static final String USER = "root";
-private static final String PASSWORD = "your_password";
+private static final String PASSWORD = "123456";
+```

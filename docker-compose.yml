@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.0.43-oraclelinux9
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: uit_smart_job
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    external: true
+
