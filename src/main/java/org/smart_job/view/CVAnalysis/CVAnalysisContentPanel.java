@@ -43,7 +43,7 @@ public class CVAnalysisContentPanel extends JPanel {
         dropPanel.setPreferredSize(new Dimension(600, 150));
         dropPanel.setBorder(BorderFactory.createDashedBorder(Color.DARK_GRAY));
 
-        dropLabel = new JLabel("Kéo thả file CV vào đây", SwingConstants.CENTER);
+        dropLabel = new JLabel("Drag and drop your CV file here", SwingConstants.CENTER);
         dropLabel.setFont(new Font("Arial", Font.BOLD, 16));
         dropPanel.add(dropLabel, BorderLayout.CENTER);
 
