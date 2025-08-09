@@ -97,6 +97,6 @@ public class JobTrackerContentPanel extends JPanel {
     }
 
     private JButton createDetailButton() {
-        return new JButton("Chi tiết");
+        return new JButton("Details");
     }
 }
