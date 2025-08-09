@@ -34,7 +34,7 @@ public class DashboardContentPanel extends JPanel{
 
     private JPanel createProfileOverview() {
         JPanel panel = new JPanel(new GridLayout(2, 3));
-        panel.setBorder(BorderFactory.createTitledBorder("Tổng quan hồ sơ"));
+        panel.setBorder(BorderFactory.createTitledBorder("Profile Overview"));
         panel.setBackground(Color.WHITE);
 
         panel.add(labelBlock("Vị trí mong muốn", "Frontend Developer"));
