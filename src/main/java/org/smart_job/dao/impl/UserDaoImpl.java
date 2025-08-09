@@ -2,7 +2,7 @@ package org.smart_job.dao.impl;
 
 import org.smart_job.dao.UserDao;
 import org.smart_job.entity.User;
-import org.smart_job.ulties.JdbcUtils;
+import org.smart_job.util.JdbcUtils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
