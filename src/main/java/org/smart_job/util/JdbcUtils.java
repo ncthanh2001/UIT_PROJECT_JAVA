@@ -1,4 +1,4 @@
-package org.smart_job.ulties;
+package org.smart_job.util;
 import java.sql.*;
 
 public class JdbcUtils {
