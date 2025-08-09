@@ -59,7 +59,7 @@ public class JobTrackerContentPanel extends JPanel {
         listPanel.setBackground(Color.WHITE);
         ((TitledBorder) listPanel.getBorder()).setTitleColor(Color.BLACK);
 
-        JLabel desc = new JLabel("Quản lý và theo dõi trạng thái các công việc bạn đã ứng tuyển");
+        JLabel desc = new JLabel("Manage and track the status of jobs you have applied for");
         desc.setFont(new Font("Arial", Font.PLAIN, 12));
         listPanel.add(desc, BorderLayout.NORTH);
 
