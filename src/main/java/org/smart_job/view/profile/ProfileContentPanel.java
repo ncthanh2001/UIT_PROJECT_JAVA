@@ -10,7 +10,7 @@ public class ProfileContentPanel extends JPanel {
     }
 
     private void initUI() {
-        JLabel label = new JLabel("Welcome to the Jobs!", JLabel.CENTER);
+        JLabel label = new JLabel("Welcome to Jobs!", JLabel.CENTER);
         label.setFont(new Font("Arial", Font.PLAIN, 20));
         add(label, BorderLayout.CENTER);
     }
