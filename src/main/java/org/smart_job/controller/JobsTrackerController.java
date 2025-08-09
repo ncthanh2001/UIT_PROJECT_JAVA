@@ -14,6 +14,7 @@ public class JobsTrackerController {
     }
 
     private void init() {
-        System.out.println("Người dùng hiện tại: ");
+        // Log current user information
+        logger.info("Current user:");
     }
 }
