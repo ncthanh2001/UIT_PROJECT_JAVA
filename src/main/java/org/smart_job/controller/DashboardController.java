@@ -14,6 +14,7 @@ public class DashboardController {
     }
 
     private void init() {
-        System.out.println("Người dùng hiện tại: ");
+        // Log current user information
+        logger.debug("Current user:");
     }
 }
