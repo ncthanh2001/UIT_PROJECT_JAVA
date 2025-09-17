@@ -9,6 +9,7 @@ public class LoginView extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
+    private JButton registerButton;
     private JLabel messageLabel;
 
     public LoginView() {
@@ -43,6 +44,10 @@ public class LoginView extends JFrame {
         loginButton = new JButton("Login");
         loginButton.setBounds(10, 80, 80, 25);
         panel.add(loginButton);
+
+        registerButton = new JButton("Register");
+        registerButton.setBounds(100, 80, 80, 25);
+        panel.add(registerButton);
 
         messageLabel = new JLabel("");
         messageLabel.setBounds(10, 110, 250, 25);
