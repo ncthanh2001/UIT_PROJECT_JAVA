@@ -1,8 +1,10 @@
 package org.smart_job.controller;
 
+import org.smart_job.service.UserService;
 import org.smart_job.view.BaseLayoutView;
 import org.smart_job.view.CVAnalysis.CVAnalysisContentPanel;
-import org.smart_job.view.LoginView;
+import org.smart_job.view.auth.LoginView;
+import org.smart_job.view.auth.RegisterView;
 import org.smart_job.view.dashboard.DashboardContentPanel;
 import org.smart_job.view.jobs.JobTrackerContentPanel;
 import org.smart_job.view.profile.ProfileContentPanel;
@@ -10,24 +12,29 @@ import org.smart_job.view.profile.ProfileContentPanel;
 public class MainController {
     private static MainController instance;
     private final BaseLayoutView view;
+    private final UserService userService;
 
-    private MainController(BaseLayoutView view) {
+    private MainController(BaseLayoutView view, UserService userService) {
         this.view = view;
-
+        this.userService = userService;
         registerEvents();
     }
 
-    public static MainController init(BaseLayoutView view) {
+    public static MainController init(BaseLayoutView view, UserService userService) {
         if (instance == null) {
-            instance = new MainController(view);
+            instance = new MainController(view, userService);
         }
         return instance;
     }
 
-    public void start() {
+    // DI singleton pattern
+    public static MainController getInstance() {
+        return instance;
+    }
+
+    public void bootstrap() {
         view.setVisible(true);
-        // TODO: Check user exist then show view
-        showDashboard(); // Default show dashboard
+        showLogin(); // Default show login view when app is bootstrap
     }
 
     private void registerEvents() {
@@ -43,6 +50,8 @@ public class MainController {
         DashboardContentPanel panel = new DashboardContentPanel();
         new DashboardController(panel);
         view.setContent(panel);
+
+        this.view.setVisible(true);
     }
 
     public void showCVAnalysis() {
@@ -64,11 +73,13 @@ public class MainController {
     }
 
     public void showLogin() {
-        LoginView view = new LoginView();
-        new LoginController(view);
-        view.setVisible(true);
+        LoginView loginView = new LoginView();
+        RegisterView registerView = new RegisterView();
+        new LoginController(loginView, registerView,userService);
+        new RegisterController(loginView,registerView,userService);
+        loginView.setVisible(true);
 
-        this.view.dispose();
+        this.view.setVisible(false);
     }
 
 }

@@ -26,6 +26,6 @@ public class Skill extends BaseEntity {
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserSkill> userSkills = new HashSet<>();
 
-    @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<JobSkill> jobSkills = new HashSet<>();
+//    @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Set<JobSkill> jobSkills = new HashSet<>();
 }

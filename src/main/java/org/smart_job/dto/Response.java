@@ -1,4 +1,4 @@
-package org.smart_job.common;
+package org.smart_job.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ public class  Response <T> {
     private T data;
 
     public static <T> Response<T> ok(T data) {
-        return new Response<>(true, "Thành công", data);
+        return new Response<>(true, "Success", data);
     }
 
     public static <T> Response<T> ok(T data, String message) {

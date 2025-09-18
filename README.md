@@ -48,9 +48,8 @@ org.smart_job
 ### 2. Cài đặt MySQL bằng Docker
 
 1. Cài đặt **Docker**
-2. Chạy command
+2. Vào thư mục của dự án và chạy command
    ```bash
-    docker volume create mysql_data
     docker compose up -d
     ```
    **Lưu ý**: root password là

@@ -5,7 +5,7 @@ import jakarta.persistence.Persistence;
 
 public class JPAUtil {
     private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("smart_jobPU"); // tên persistence-unit trong persistence.xml
+            Persistence.createEntityManagerFactory("smart_jobPU"); // name persistence-unit in persistence.xml file
 
     public static EntityManagerFactory getEntityManagerFactory() {
         return emf;

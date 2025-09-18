@@ -1,37 +1,66 @@
 package org.smart_job.service.impl;
 
-//import org.smart_job.common.Response;
-//import org.smart_job.dao.UserDAO;
-//import org.smart_job.dao.impl.UserDAOImpl;
-//import org.smart_job.entity.User;
-//import org.smart_job.service.UserService;
-
 import jakarta.persistence.EntityManager;
-import org.smart_job.common.Response;
+import org.smart_job.dto.Response;
+import org.smart_job.dto.auth.RegisterUserDto;
 import org.smart_job.entity.UserEntity;
 import org.smart_job.service.UserService;
 import org.smart_job.util.JPAUtil;
+import org.smart_job.util.PasswordUtil;
 
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
     @Override
-    public Response<UserEntity> addUser(UserEntity user) {
+    public Response<UserEntity> login(String email, String password) {
+        return null;
+    }
+
+    @Override
+    public Response<UserEntity> register(RegisterUserDto registerUserDto) {
         EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
         try {
             em.getTransaction().begin();
+
+            // Validate password match
+            if (!registerUserDto.getPassword().equals(registerUserDto.getConfirmPassword())) {
+                return Response.fail("Passwords do not match");
+            }
+
+            // Kiểm tra email trùng
+            Long count = em.createQuery(
+                            "SELECT COUNT(u) FROM UserEntity u WHERE u.email = :email",
+                            Long.class)
+                    .setParameter("email", registerUserDto.getEmail())
+                    .getSingleResult();
+            if (count > 0) {
+                return Response.fail("Email already exists");
+            }
+
+            UserEntity user = new UserEntity();
+            user.setFirstName(registerUserDto.getFirstName());
+            user.setLastName(registerUserDto.getLastName());
+            user.setEmail(registerUserDto.getEmail());
+            user.setCountry(registerUserDto.getCountry());
+            user.setDob(registerUserDto.getDob());
+
+            // Hash password before save
+            user.setPassword(PasswordUtil.encode(registerUserDto.getPassword()));
+
             em.persist(user);
             em.getTransaction().commit();
-            return Response.ok(user, "User added successfully");
+
+            return Response.ok(user, "User registered successfully");
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return Response.fail("Failed to add user: " + e.getMessage());
+            return Response.fail("Failed to register user: " + e.getMessage());
         } finally {
             em.close();
         }
     }
+
 
     @Override
     public Response<UserEntity> updateUser(UserEntity userEntity) {

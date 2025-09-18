@@ -1,6 +1,6 @@
 package org.smart_job.controller;
 
-import org.smart_job.common.Response;
+import org.smart_job.dto.Response;
 import org.smart_job.entity.UserEntity;
 import org.smart_job.service.UserService;
 
@@ -19,11 +19,11 @@ public class UserController {
         u.setLastName(name);
         u.setPassword(password);
 
-        Response<UserEntity> response = userService.addUser(u);
-        if (response.isSuccess()) {
-            System.out.println("User registered: " + response.getData().getEmail());
-        } else {
-            System.err.println("Error: " + response.getMessage());
-        }
+//        Response<UserEntity> response = userService.register(u);
+//        if (response.isSuccess()) {
+//            System.out.println("User registered: " + response.getData().getEmail());
+//        } else {
+//            System.err.println("Error: " + response.getMessage());
+//        }
     }
 }

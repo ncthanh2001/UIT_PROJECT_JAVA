@@ -1,12 +1,14 @@
 package org.smart_job.service;
 
-import org.smart_job.common.Response;
+import org.smart_job.dto.Response;
+import org.smart_job.dto.auth.RegisterUserDto;
 import org.smart_job.entity.UserEntity;
 
 import java.util.List;
 
 public interface UserService {
-    Response<UserEntity> addUser(UserEntity userEntity);
+    Response<UserEntity> login(String email, String password);
+    Response<UserEntity> register(RegisterUserDto registerUserDto);
     Response<UserEntity> updateUser(UserEntity userEntity);
     Response<Boolean> deleteUser(Integer id);
     Response<UserEntity> getUserById(Integer id);

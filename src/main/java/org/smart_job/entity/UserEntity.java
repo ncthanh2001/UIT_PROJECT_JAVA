@@ -30,7 +30,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "email", unique = true, nullable = false, length = 50)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 50)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "avatar", length = 200)
@@ -38,9 +38,6 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "country", length = 50)
     private String country;
-
-    @Column(name = "role", length = 50)
-    private String role;
 
     @Column(name = "dob")
     private LocalDate dob;
