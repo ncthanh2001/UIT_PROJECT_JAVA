@@ -61,11 +61,4 @@ public class BaseLayoutView extends JFrame {
         contentPanel.revalidate();
         contentPanel.repaint();
     }
-
-    public void setContent(JPanel newViewPanel, String title) {
-        contentPanel.removeAll();
-        contentPanel.add(newViewPanel, BorderLayout.CENTER);
-        contentPanel.revalidate();
-        contentPanel.repaint();
-    }
 }

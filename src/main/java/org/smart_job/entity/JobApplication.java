@@ -25,7 +25,7 @@ public class JobApplication extends BaseEntity {
     private String notes;
 
     // Relationships
-    private User user;
+    private UserEntity userEntity;
     private Job job;
 
     public String getCompanyName() {

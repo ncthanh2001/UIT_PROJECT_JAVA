@@ -26,6 +26,7 @@ public class MainController {
 
     public void start() {
         view.setVisible(true);
+        // TODO: Check user exist then show view
         showDashboard(); // Default show dashboard
     }
 
