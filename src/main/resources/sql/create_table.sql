@@ -1,9 +1,9 @@
-create database uit_smart_job;
+CREATE DATABASE IF NOT EXISTS uit_smart_job;
 
-use uit_smart_job;
+USE uit_smart_job;
 
 -- Create users table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
                        id INT AUTO_INCREMENT PRIMARY KEY,
                        first_name VARCHAR(255),
                        last_name VARCHAR(255),
@@ -17,7 +17,7 @@ CREATE TABLE users (
 );
 
 -- Create skills table
-CREATE TABLE skills (
+CREATE TABLE IF NOT EXISTS skills (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         name VARCHAR(255) UNIQUE NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -25,7 +25,7 @@ CREATE TABLE skills (
 );
 
 -- Create user_skills junction table
-CREATE TABLE user_skills (
+CREATE TABLE IF NOT EXISTS user_skills (
                              user_id INT,
                              skill_id INT,
                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -36,7 +36,7 @@ CREATE TABLE user_skills (
 );
 
 -- Create cvs table
-CREATE TABLE cvs (
+CREATE TABLE IF NOT EXISTS cvs (
                      id INT AUTO_INCREMENT PRIMARY KEY,
                      user_id INT,
                      file_path VARCHAR(500),
@@ -47,7 +47,7 @@ CREATE TABLE cvs (
 );
 
 -- Create jobs table
-CREATE TABLE jobs (
+CREATE TABLE IF NOT EXISTS jobs (
                       id INT AUTO_INCREMENT PRIMARY KEY,
                       title VARCHAR(255),
                       company_name VARCHAR(255),
@@ -61,7 +61,7 @@ CREATE TABLE jobs (
 );
 
 -- Create job_skills junction table
-CREATE TABLE job_skills (
+CREATE TABLE IF NOT EXISTS job_skills (
                             job_id INT,
                             skill_id INT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -72,7 +72,7 @@ CREATE TABLE job_skills (
 );
 
 -- Create job_application table with ENUM for status
-CREATE TABLE job_application (
+CREATE TABLE IF NOT EXISTS job_application (
                                  id INT AUTO_INCREMENT PRIMARY KEY,
                                  user_id INT NOT NULL,
                                  job_id INT NULL,
