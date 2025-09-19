@@ -1,64 +1,60 @@
 package org.smart_job.service.impl;
 
-import jakarta.persistence.EntityManager;
+import org.smart_job.dao.UserDAO;
+import org.smart_job.dao.impl.UserDAOImpl;
 import org.smart_job.dto.Response;
+import org.smart_job.dto.auth.LoginUserDto;
 import org.smart_job.dto.auth.RegisterUserDto;
 import org.smart_job.entity.UserEntity;
 import org.smart_job.service.UserService;
-import org.smart_job.util.JPAUtil;
 import org.smart_job.util.PasswordUtil;
 
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
+    private UserDAO userDAO = new UserDAOImpl();
+
     @Override
-    public Response<UserEntity> login(String email, String password) {
-        return null;
+    public Response login(LoginUserDto loginUserDto) {
+        UserEntity user = userDAO.findByEmail(loginUserDto.getEmail());
+
+        if (user == null) return Response.fail("User not found");
+        boolean passwordOk = PasswordUtil.matches(loginUserDto.getPassword(), user.getPassword());
+
+        if (!passwordOk) return Response.fail("Wrong password");
+
+        return Response.ok(user, "Login success");
     }
 
     @Override
     public Response<UserEntity> register(RegisterUserDto registerUserDto) {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            em.getTransaction().begin();
 
-            // Validate password match
-            if (!registerUserDto.getPassword().equals(registerUserDto.getConfirmPassword())) {
-                return Response.fail("Passwords do not match");
-            }
-
-            // Kiểm tra email trùng
-            Long count = em.createQuery(
-                            "SELECT COUNT(u) FROM UserEntity u WHERE u.email = :email",
-                            Long.class)
-                    .setParameter("email", registerUserDto.getEmail())
-                    .getSingleResult();
-            if (count > 0) {
-                return Response.fail("Email already exists");
-            }
-
-            UserEntity user = new UserEntity();
-            user.setFirstName(registerUserDto.getFirstName());
-            user.setLastName(registerUserDto.getLastName());
-            user.setEmail(registerUserDto.getEmail());
-            user.setCountry(registerUserDto.getCountry());
-            user.setDob(registerUserDto.getDob());
-
-            // Hash password before save
-            user.setPassword(PasswordUtil.encode(registerUserDto.getPassword()));
-
-            em.persist(user);
-            em.getTransaction().commit();
-
-            return Response.ok(user, "User registered successfully");
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            return Response.fail("Failed to register user: " + e.getMessage());
-        } finally {
-            em.close();
+        // Validate password match
+        if (!registerUserDto.getPassword().equals(registerUserDto.getConfirmPassword())) {
+            return Response.fail("Passwords do not match");
         }
+
+        // Check email is exist
+        UserEntity user = userDAO.findByEmail(registerUserDto.getEmail());
+        if (user != null) {
+            return Response.fail("Email already exists");
+        }
+
+        // Build new User Entity
+        UserEntity newUser = new UserEntity();
+        newUser.setFirstName(registerUserDto.getFirstName());
+        newUser.setLastName(registerUserDto.getLastName());
+        newUser.setEmail(registerUserDto.getEmail());
+        newUser.setCountry(registerUserDto.getCountry());
+        newUser.setDob(registerUserDto.getDob());
+
+        // Hash password before save
+        newUser.setPassword(PasswordUtil.encode(registerUserDto.getPassword()));
+
+        userDAO.save(newUser);
+
+        return Response.ok(newUser, "User registered successfully");
+
     }
 
 

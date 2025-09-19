@@ -1,5 +1,7 @@
 package org.smart_job.controller;
 
+import org.smart_job.controller.auth.LoginController;
+import org.smart_job.controller.auth.RegisterController;
 import org.smart_job.service.UserService;
 import org.smart_job.view.BaseLayoutView;
 import org.smart_job.view.CVAnalysis.CVAnalysisContentPanel;

@@ -49,6 +49,7 @@ public class JdbcUtils {
             return 0;
         }
     }
+
     // ultis excutequery
     public static ResultSet executeQuery(Connection conn, String sql, Object... params) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(sql);
