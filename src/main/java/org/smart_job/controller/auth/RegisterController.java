@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.smart_job.dto.Response;
 import org.smart_job.dto.auth.RegisterUserDto;
 import org.smart_job.entity.UserEntity;
+import org.smart_job.enums.UserRole;
 import org.smart_job.service.UserService;
 import org.smart_job.view.auth.LoginView;
 import org.smart_job.view.auth.RegisterView;
@@ -63,6 +64,7 @@ public class RegisterController {
         String confirmPassword = new String(registerView.getConfirmPasswordField().getPassword());
         String country = (String) registerView.getCountryComboBox().getSelectedItem();
         Date dob = registerView.getDobChooser().getDate();
+        UserRole selectedRole = (UserRole) registerView.getRoleComboBox().getSelectedItem();
 
         // --- Validation ---
         if (firstName.isEmpty()) {
@@ -115,6 +117,7 @@ public class RegisterController {
         userDto.setConfirmPassword(confirmPassword);
         userDto.setCountry(country);
         userDto.setDob(dobLocal);
+        userDto.setRole(selectedRole);
 
         return Optional.of(userDto);
     }

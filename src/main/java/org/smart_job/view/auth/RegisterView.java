@@ -2,6 +2,7 @@ package org.smart_job.view.auth;
 
 import com.toedter.calendar.JDateChooser;
 import lombok.Getter;
+import org.smart_job.enums.UserRole;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,7 @@ public class RegisterView extends JFrame {
     private JPasswordField confirmPasswordField;
     private JComboBox<String> countryComboBox;
     private JDateChooser dobChooser;
+    private JComboBox<UserRole> roleComboBox;
     private JButton registerButton;
     private JButton cancelButton;
     private JLabel messageLabel;
@@ -114,6 +116,17 @@ public class RegisterView extends JFrame {
         gbc.gridx = 1; gbc.anchor = GridBagConstraints.WEST;
         mainPanel.add(dobChooser, gbc);
         row++;
+
+        // Role
+        gbc.gridx = 0; gbc.gridy = row; gbc.anchor = GridBagConstraints.EAST;
+        mainPanel.add(new JLabel("Role:"), gbc);
+
+        roleComboBox = new JComboBox<>(UserRole.values()); // load từ enum
+        roleComboBox.setSelectedItem(UserRole.USER); // default USER
+        gbc.gridx = 1; gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(roleComboBox, gbc);
+        row++;
+
 
         // Message label
         messageLabel = new JLabel("", SwingConstants.CENTER);

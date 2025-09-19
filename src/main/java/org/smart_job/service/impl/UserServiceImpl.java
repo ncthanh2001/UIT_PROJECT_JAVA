@@ -6,6 +6,7 @@ import org.smart_job.dto.Response;
 import org.smart_job.dto.auth.LoginUserDto;
 import org.smart_job.dto.auth.RegisterUserDto;
 import org.smart_job.entity.UserEntity;
+import org.smart_job.enums.UserRole;
 import org.smart_job.service.UserService;
 import org.smart_job.util.PasswordUtil;
 
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(registerUserDto.getEmail());
         newUser.setCountry(registerUserDto.getCountry());
         newUser.setDob(registerUserDto.getDob());
+        newUser.setRole(registerUserDto.getRole());
 
         // Hash password before save
         newUser.setPassword(PasswordUtil.encode(registerUserDto.getPassword()));

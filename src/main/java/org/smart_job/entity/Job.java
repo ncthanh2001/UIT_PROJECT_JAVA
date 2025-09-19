@@ -24,7 +24,7 @@ public class Job extends BaseEntity {
     private LocalDateTime expirationDate;
 
     // Relationships
-    private List<Skill> skills;
+    private List<SkillEntity> skillEntities;
     private List<JobApplication> jobApplications;
 
     public boolean isExpired() {

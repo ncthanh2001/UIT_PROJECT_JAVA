@@ -16,7 +16,7 @@ public class JobSkill extends BaseEntity {
 
     // Relationships
     private Job job;
-    private Skill skill;
+    private SkillEntity skillEntity;
 
     @Override
     public boolean equals(Object obj) {

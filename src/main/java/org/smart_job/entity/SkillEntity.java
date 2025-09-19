@@ -15,7 +15,7 @@ import java.util.HashSet;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Skill extends BaseEntity {
+public class SkillEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,8 +23,8 @@ public class Skill extends BaseEntity {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UserSkill> userSkills = new HashSet<>();
+    @OneToMany(mappedBy = "skillEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UserSkillEntity> userSkills = new HashSet<>();
 
 //    @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private Set<JobSkill> jobSkills = new HashSet<>();

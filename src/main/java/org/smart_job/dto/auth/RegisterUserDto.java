@@ -1,6 +1,7 @@
 package org.smart_job.dto.auth;
 
 import lombok.Data;
+import org.smart_job.enums.UserRole;
 
 import java.time.LocalDate;
 
@@ -13,4 +14,5 @@ public class RegisterUserDto {
     private String confirmPassword;
     private String country;
     private LocalDate dob;
+    private UserRole role;
 }

@@ -6,7 +6,9 @@
              https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
     <persistence-unit name="smart_jobPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>org.smart_job.entity.UserEntity</class>  <!-- Add other entities here if needed -->
+        <class>org.smart_job.entity.UserEntity</class>
+        <class>org.smart_job.entity.SkillEntity</class>
+        <class>org.smart_job.entity.UserSkillEntity</class>
 
         <properties>
             <!-- JDBC Driver -->

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.smart_job.enums.UserRole;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -39,6 +40,10 @@ public class UserEntity extends BaseEntity {
     @Column(name = "country", length = 50)
     private String country;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 20)
+    private UserRole role = UserRole.USER; // ROLE USER is Default
+
     @Column(name = "dob")
     private LocalDate dob;
 
@@ -48,6 +53,6 @@ public class UserEntity extends BaseEntity {
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private Set<JobApplication> jobApplications = new HashSet<>();
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Set<UserSkill> userSkills = new HashSet<>();
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UserSkillEntity> userSkills = new HashSet<>();
 }
