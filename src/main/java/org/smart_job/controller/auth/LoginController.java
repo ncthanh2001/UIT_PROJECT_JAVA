@@ -3,12 +3,17 @@ package org.smart_job.controller.auth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.smart_job.controller.MainController;
+import org.smart_job.dto.Response;
+import org.smart_job.dto.auth.LoginUserDto;
+import org.smart_job.dto.auth.RegisterUserDto;
 import org.smart_job.service.UserService;
+import org.smart_job.util.Extensions;
 import org.smart_job.view.auth.LoginView;
 import org.smart_job.view.auth.RegisterView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class LoginController {
@@ -32,46 +37,51 @@ public class LoginController {
         });
 
         loginView.getLoginButton().addActionListener(e -> {
-            String email = loginView.getEmailField().getText().trim();
-            String password = new String(loginView.getPasswordField().getPassword());
-            JLabel messageLabel = loginView.getMessageLabel();
-            System.out.println("[LoginController] Email: " + email);
-            System.out.println("[LoginController] Password: " + password);
-            System.out.println("[LoginController] Login button clicked");
-            try {
-                if (!isValidEmail(email)) {
-                    messageLabel.setText("Email is not valid!");
-                    return;
-                } else if (password.isEmpty()) {
-                    messageLabel.setText("Password is required!");
-                    return;
 
-                } else {
-                    messageLabel.setForeground(Color.GREEN);
-                    messageLabel.setText("Login successful!.");
-                    // TODO: call service check user
-
-
+            validateAndBuildUser().ifPresent(user -> {
+                // Call service to authenticate
+                Response response = userService.login(user);
+                if (response.isSuccess()) {
+                    loginView.getMessageLabel().setForeground(Color.GREEN);
+                    loginView.getMessageLabel().setText("Login successful!");
 
                     // When login success
-                    MainController.getInstance().showDashboard();
                     loginView.dispose();
+                    registerView.dispose();
+                    MainController.getInstance().showDashboard();
+                } else {
+                    showError(response.getMessage());
                 }
+            });
 
-                messageLabel.setText("Login successful!");
-                logger.info("User {} logged in successfully.", email);
-            } catch (Exception ex) {
-                System.out.println("[LoginController] Error during login: " + ex.getMessage());
-                messageLabel.setText("An error occurred during login. Please try again.");
-                JOptionPane.showMessageDialog(loginView, "An error occurred during login: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                logger.error("Error during login", ex);
-            }
         });
     }
 
-    // Regex validate email
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return Pattern.compile(emailRegex).matcher(email).matches();
+    private Optional<LoginUserDto> validateAndBuildUser() {
+        String email = loginView.getEmailField().getText().trim();
+        String password = new String(loginView.getPasswordField().getPassword());
+
+        if (email.isEmpty() || !Extensions.isValidEmail(email)) {
+            showError("Invalid email");
+            return Optional.empty();
+        }
+
+        if (password.isEmpty() || password.length() < 6) {
+            showError("Password must be at least 6 characters");
+            return Optional.empty();
+        }
+
+        // --- Build Dto ---
+        LoginUserDto loginUserDto = new LoginUserDto();
+        loginUserDto.setEmail(email);
+        loginUserDto.setPassword(password);
+
+        return Optional.of(loginUserDto);
     }
+
+    private void showError(String message) {
+        loginView.getMessageLabel().setForeground(Color.RED);
+        loginView.getMessageLabel().setText(message);
+    }
+
 }

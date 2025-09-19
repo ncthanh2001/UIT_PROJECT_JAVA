@@ -7,6 +7,7 @@ import org.smart_job.dto.auth.RegisterUserDto;
 import org.smart_job.entity.UserEntity;
 import org.smart_job.enums.UserRole;
 import org.smart_job.service.UserService;
+import org.smart_job.util.Extensions;
 import org.smart_job.view.auth.LoginView;
 import org.smart_job.view.auth.RegisterView;
 
@@ -39,7 +40,7 @@ public class RegisterController {
 
         registerView.getRegisterButton().addActionListener(e -> {
             validateAndBuildUser().ifPresent(user -> {
-                // Gọi service để lưu DB
+                // Call service save user to DB
                 Response<UserEntity> response = userService.register(user);
                 if (response.isSuccess()) {
                     registerView.getMessageLabel().setForeground(Color.GREEN);
@@ -77,7 +78,7 @@ public class RegisterController {
             return Optional.empty();
         }
 
-        if (email.isEmpty() || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+        if (email.isEmpty() || !Extensions.isValidEmail(email)) {
             showError("Invalid email");
             return Optional.empty();
         }
@@ -109,17 +110,17 @@ public class RegisterController {
         }
 
         // --- Build Dto ---
-        RegisterUserDto userDto = new RegisterUserDto();
-        userDto.setFirstName(firstName);
-        userDto.setLastName(lastName);
-        userDto.setEmail(email);
-        userDto.setPassword(password);
-        userDto.setConfirmPassword(confirmPassword);
-        userDto.setCountry(country);
-        userDto.setDob(dobLocal);
-        userDto.setRole(selectedRole);
+        RegisterUserDto userRegisterDto = new RegisterUserDto();
+        userRegisterDto.setFirstName(firstName);
+        userRegisterDto.setLastName(lastName);
+        userRegisterDto.setEmail(email);
+        userRegisterDto.setPassword(password);
+        userRegisterDto.setConfirmPassword(confirmPassword);
+        userRegisterDto.setCountry(country);
+        userRegisterDto.setDob(dobLocal);
+        userRegisterDto.setRole(selectedRole);
 
-        return Optional.of(userDto);
+        return Optional.of(userRegisterDto);
     }
 
     private void showError(String message) {
