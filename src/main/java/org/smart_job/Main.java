@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.smart_job.controller.MainController;
+import org.smart_job.util.JdbcUtils;
 import org.smart_job.view.BaseLayoutView;
 
 import javax.swing.*;
@@ -14,7 +15,8 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                // Check connect mysql
+//                JdbcUtils.initDB(); // Lưu ý: chỉ nên chạy 1 lần
+
                 UIManager.setLookAndFeel(new FlatLightLaf());
 
                 BaseLayoutView layoutView = new BaseLayoutView();

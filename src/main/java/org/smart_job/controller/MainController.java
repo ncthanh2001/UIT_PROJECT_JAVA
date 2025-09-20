@@ -1,13 +1,19 @@
 package org.smart_job.controller;
 
+import lombok.Getter;
+import org.smart_job.controller.auth.LoginController;
+import org.smart_job.controller.auth.RegisterController;
+import org.smart_job.session.UserSession;
 import org.smart_job.view.BaseLayoutView;
 import org.smart_job.view.CVAnalysis.CVAnalysisContentPanel;
-import org.smart_job.view.LoginView;
+import org.smart_job.view.auth.LoginView;
+import org.smart_job.view.auth.RegisterView;
 import org.smart_job.view.dashboard.DashboardContentPanel;
 import org.smart_job.view.jobs.JobTrackerContentPanel;
 import org.smart_job.view.profile.ProfileContentPanel;
 
 public class MainController {
+    @Getter
     private static MainController instance;
     private final BaseLayoutView view;
 
@@ -25,8 +31,9 @@ public class MainController {
     }
 
     public void start() {
-        view.setVisible(true);
-        showDashboard(); // Default show dashboard
+        view.setVisible(false);
+//        showDashboard(); // Default show dashboard
+        showLogin(); // Show login
     }
 
     private void registerEvents() {
@@ -34,40 +41,60 @@ public class MainController {
         view.getCvAnalysisButton().addActionListener(e -> showCVAnalysis());
         view.getJobTrackerButton().addActionListener(e -> showJobTracker());
         view.getProfileButton().addActionListener(e -> showProfile());
-        view.getLoginButton().addActionListener(e -> showLogin());
+        view.getLogoutButton().addActionListener(e -> {
+            logout();
+            showLogin();
+        });
     }
 
     // --- Navigation Methods ---
     public void showDashboard() {
+        view.setVisible(true);
         DashboardContentPanel panel = new DashboardContentPanel();
         new DashboardController(panel);
         view.setContent(panel);
     }
 
     public void showCVAnalysis() {
+        view.setVisible(true);
+
         CVAnalysisContentPanel panel = new CVAnalysisContentPanel();
         new CVAnalysisController(panel);
         view.setContent(panel);
     }
 
     public void showJobTracker() {
+        view.setVisible(true);
+
         JobTrackerContentPanel panel = new JobTrackerContentPanel();
         new JobsTrackerController(panel);
         view.setContent(panel);
     }
 
     public void showProfile() {
+        view.setVisible(true);
+
         ProfileContentPanel panel = new ProfileContentPanel();
         new ProfileController(panel);
         view.setContent(panel);
     }
 
     public void showLogin() {
-        LoginView view = new LoginView();
-        new LoginController(view);
-        view.setVisible(true);
+        view.setVisible(false);
 
-        this.view.dispose();
+        LoginView loginView = new LoginView();
+        new LoginController(loginView);
+        loginView.setVisible(true);
+
     }
 
+    public void showRegister() {
+        RegisterView registerView = new RegisterView();
+        new RegisterController(registerView);
+        registerView.setVisible(true);
+    }
+
+    private void logout() {
+        UserSession.getInstance().clear();
+    }
 }
