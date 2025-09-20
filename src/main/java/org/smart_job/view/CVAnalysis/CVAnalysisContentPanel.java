@@ -4,17 +4,21 @@ import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 @Getter
 public class CVAnalysisContentPanel extends JPanel {
     private JLabel dropLabel;
     private JButton chooseFileButton;
+    private JLabel uploadedFileLabel; // hiển thị file đã upload
 
     public CVAnalysisContentPanel() {
         initCVAnalysis();
     }
 
     private void initCVAnalysis() {
+        setLayout(new BorderLayout());
+
         // Title + Subtitle
         JPanel headerPanel = new JPanel(new BorderLayout());
         JLabel title = new JLabel("CV Analysis");
@@ -48,11 +52,15 @@ public class CVAnalysisContentPanel extends JPanel {
         dropPanel.add(dropLabel, BorderLayout.CENTER);
 
         // Text under drop
-        JLabel orLabel = new JLabel("or selected file from computer", SwingConstants.CENTER);
+        JLabel orLabel = new JLabel("or select file from computer", SwingConstants.CENTER);
         orLabel.setForeground(Color.RED);
         JLabel hintLabel = new JLabel("Support PDF (max 10MB)", SwingConstants.CENTER);
 
         chooseFileButton = new JButton("Choose file from computer");
+
+        uploadedFileLabel = new JLabel("No CV uploaded yet", SwingConstants.CENTER);
+        uploadedFileLabel.setForeground(Color.BLUE);
+        uploadedFileLabel.setFont(new Font("Arial", Font.ITALIC, 14));
 
         uploadPanel.add(uploadTitle);
         uploadPanel.add(uploadSubtitle);
@@ -63,6 +71,8 @@ public class CVAnalysisContentPanel extends JPanel {
         uploadPanel.add(hintLabel);
         uploadPanel.add(Box.createVerticalStrut(10));
         uploadPanel.add(chooseFileButton);
+        uploadPanel.add(Box.createVerticalStrut(20));
+        uploadPanel.add(uploadedFileLabel); // thêm label hiển thị file
 
         // Wrap all
         JPanel wrapper = new JPanel();
@@ -73,5 +83,24 @@ public class CVAnalysisContentPanel extends JPanel {
         wrapper.add(uploadPanel);
 
         add(wrapper, BorderLayout.CENTER);
+    }
+
+    public String chooseFile() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PDF Files", "pdf"));
+        int result = chooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            return file.getAbsolutePath();
+        }
+        return null;
+    }
+
+    public void setUploadedFilePath(String path) {
+        uploadedFileLabel.setText("Uploaded CV: " + path);
+    }
+
+    public void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
     }
 }
