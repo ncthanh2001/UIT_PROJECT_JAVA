@@ -16,7 +16,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             try {
 //                JdbcUtils.initDB(); // Lưu ý: chỉ nên chạy 1 lần
-                JdbcUtils.seedJobsData(); // Lưu ý: chỉ nên chạy 1 lần
+//                JdbcUtils.seedJobsData(); // Lưu ý: chỉ nên chạy 1 lần
 
 
                 UIManager.setLookAndFeel(new FlatLightLaf());
