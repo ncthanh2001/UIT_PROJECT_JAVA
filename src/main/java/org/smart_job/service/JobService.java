@@ -6,15 +6,35 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface JobService {
-    List<Job> getAllJobs() throws Exception;
-    Job getJobById(Integer id) throws Exception;
-    Job createJob(Job job) throws Exception;
-    void updateJob(Job job) throws Exception;
-    void deleteJob(Integer id) throws Exception;
+    // Location-based queries
+    List<Job> findByCountry(String country) throws Exception;
+    List<Job> findByCity(String city) throws Exception;
+    List<Job> findByLocation(String country, String city) throws Exception;
 
-    List<Job> searchJobs(String keyword) throws Exception;
-    List<Job> getActiveJobs() throws Exception;
-    List<Job> getExpiredJobs() throws Exception;
-    List<Job> getJobsExpiringBefore(LocalDateTime date) throws Exception;
-    List<Job> getRecentJobs(int limit) throws Exception;
+    // Company-based queries
+    List<Job> findByCompanyName(String companyName) throws Exception;
+    List<Job> findByCompanyNameContaining(String keyword) throws Exception;
+
+    // Title and description search
+    List<Job> getAllJobs() throws Exception;
+    List<Job> findByTitleContaining(String keyword) throws Exception;
+    List<Job> searchInDescription(String keyword) throws Exception;
+    List<Job> searchJobs(String keyword) throws Exception; // Combined search
+
+    // Expiration and status
+    List<Job> findActiveJobs() throws Exception;
+    List<Job> findExpiredJobs() throws Exception;
+    List<Job> findJobsExpiringBefore(LocalDateTime date) throws Exception;
+
+    // Skill-based matching
+    List<Job> findJobsBySkillId(Integer skillId) throws Exception;
+    List<Job> findJobsMatchingUserSkills(Integer userId) throws Exception;
+
+    // Statistics and analytics
+    int countByCompanyName(String companyName) throws Exception;
+    List<String> getUniqueCompanies() throws Exception;
+    List<String> getUniqueLocations() throws Exception;
+
+    // Recent jobs
+    List<Job> findRecentJobs(int limit) throws Exception;
 }
