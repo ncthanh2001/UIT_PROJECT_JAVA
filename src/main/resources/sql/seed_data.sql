@@ -10,6 +10,7 @@ DELETE FROM job_application;
 ALTER TABLE job_skills AUTO_INCREMENT = 1;
 ALTER TABLE jobs AUTO_INCREMENT = 1;
 ALTER TABLE skills AUTO_INCREMENT = 1;
+ALTER TABLE job_application AUTO_INCREMENT = 1;
 
 -- =========================
 -- Seed Skills

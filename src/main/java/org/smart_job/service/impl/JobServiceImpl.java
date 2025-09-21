@@ -101,4 +101,14 @@ public class JobServiceImpl implements JobService {
     public List<Job> findRecentJobs(int limit) throws Exception {
         return jobDao.findRecentJobs(limit);
     }
+
+    @Override
+    public List<Job> findJobs(String keyword, String country, String city, int page, int pageSize) throws Exception {
+        return jobDao.findJobs(keyword, country, city, page, pageSize);
+    }
+
+    @Override
+    public int countJobs(String keyword, String country, String city) throws Exception {
+        return jobDao.countJobs(keyword, country, city);
+    }
 }

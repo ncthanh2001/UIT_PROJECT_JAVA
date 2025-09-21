@@ -35,5 +35,10 @@ public interface JobDAO extends GenericDAO<Job, Integer> {
 
     // Recent jobs
     List<Job> findRecentJobs(int limit) throws Exception;
+
+    // Pagination queries
+    List<Job> findJobs(String keyword, String country, String city, int page, int pageSize) throws Exception;
+    int countJobs(String keyword, String country, String city) throws Exception;
+
 }
 

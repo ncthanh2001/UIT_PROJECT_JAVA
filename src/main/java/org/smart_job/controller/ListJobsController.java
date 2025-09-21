@@ -105,32 +105,19 @@ public class ListJobsController {
             String country = (String) view.getCountryComboBox().getSelectedItem();
             String city = (String) view.getCityComboBox().getSelectedItem();
 
-            // get all matching jobs
-            List<Job> allJobs;
+            // Chuyển "All Countries"/"All Cities" thành null để query DB
+            if ("All Countries".equals(country)) country = null;
+            if ("All Cities".equals(city)) city = null;
+            if (keyword.isEmpty()) keyword = null;
 
-            if (!keyword.isEmpty()) {
-                allJobs = jobService.searchJobs(keyword);
-            } else if (!"All Countries".equals(country) && !"All Cities".equals(city)) {
-                allJobs = jobService.findByLocation(country, city);
-            } else if (!"All Countries".equals(country)) {
-                allJobs = jobService.findByCountry(country);
-            } else if (!"All Cities".equals(city)) {
-                allJobs = jobService.findByCity(city);
-            } else {
-                allJobs = jobService.getAllJobs();
-            }
-
-            // Pagination logic
-            int total = allJobs.size();
-            view.totalPages = (int) Math.ceil((double) total / view.pageSize);
+            // Count tổng job để tính total page
+            int total = jobService.countJobs(keyword, country, city);
+            view.totalPages = Math.max(1, (int) Math.ceil((double) total / view.pageSize));
             view.currentPage = Math.min(Math.max(page, 1), view.totalPages);
 
-            int start = (view.currentPage - 1) * view.pageSize;
-            int end = Math.min(start + view.pageSize, total);
+            // Lấy jobs trong page hiện tại
+            List<Job> jobsPage = jobService.findJobs(keyword, country, city, view.currentPage, view.pageSize);
 
-            List<Job> jobsPage = allJobs.subList(start, end);
-
-            // Display jobs
             for (Job job : jobsPage) {
                 List<String> skills = skillService.getSkillsByJobId(job.getId())
                         .stream()
@@ -139,48 +126,51 @@ public class ListJobsController {
                 String matchPercent = (50 + (int) (Math.random() * 50)) + "%";
                 view.addJobCard(job, matchPercent, skills);
 
-                // Attach Apply action
-                view.getApplyBtn().addActionListener(e -> {
-                    int result = showConfirmDialog("Xác nhận ứng tuyển", "Bạn có chắc muốn gửi CV tới " + job.getCompanyName() + "?");
-
-                    if (result == JOptionPane.YES_OPTION) {
-                        try {
-                            User currentUser = UserSession.getInstance().getCurrentUser();
-
-                            JobApplication newJobApplication = new JobApplication();
-                            newJobApplication.setUserId(currentUser.getId());
-                            newJobApplication.setJobId(job.getId());
-                            newJobApplication.setCustomTitle(job.getTitle());
-                            newJobApplication.setCustomCompany(job.getCompanyName());
-                            newJobApplication.setCustomDescription(job.getDescription());
-                            newJobApplication.setCustomUrl(job.getUrl());
-                            newJobApplication.setApplicationDate(LocalDateTime.now());
-                            newJobApplication.setStatus(JobStatus.APPLIED);
-                            newJobApplication.setNotes(""); // TODO: option notes
-
-                            JobApplication res = jobApplicationService.insert(newJobApplication);
-                            if (res != null) {
-                                showSuccess("CV của bạn đã được gửi tới " + job.getCompanyName());
-                            } else {
-                                showWarning("Bạn đã ứng tuyển vị trí này");
-                            }
-                        } catch (Exception ex) {
-                            showWarning(ex.getMessage());
-                            throw new RuntimeException(ex);
-                        }
-
-
-                    }
-                });
+                attachApplyAction(job); // Insert to JobApplication
             }
 
-            // Update page label
             view.getPageLabel().setText("Page " + view.currentPage + " / " + view.totalPages);
 
         } catch (Exception e) {
             e.printStackTrace();
             showError("Error loading jobs: " + e.getMessage());
         }
+    }
+
+
+    private void attachApplyAction(Job job) {
+        view.getApplyBtn().addActionListener(e -> {
+            int result = showConfirmDialog("Xác nhận ứng tuyển", "Bạn có chắc muốn gửi CV tới " + job.getCompanyName() + "?");
+
+            if (result == JOptionPane.YES_OPTION) {
+                try {
+                    User currentUser = UserSession.getInstance().getCurrentUser();
+
+                    JobApplication newJobApplication = new JobApplication();
+                    newJobApplication.setUserId(currentUser.getId());
+                    newJobApplication.setJobId(job.getId());
+                    newJobApplication.setCustomTitle(job.getTitle());
+                    newJobApplication.setCustomCompany(job.getCompanyName());
+                    newJobApplication.setCustomDescription(job.getDescription());
+                    newJobApplication.setCustomUrl(job.getUrl());
+                    newJobApplication.setApplicationDate(LocalDateTime.now());
+                    newJobApplication.setStatus(JobStatus.APPLIED);
+                    newJobApplication.setNotes(""); // TODO: option notes
+
+                    JobApplication res = jobApplicationService.insert(newJobApplication);
+                    if (res != null) {
+                        showSuccess("CV của bạn đã được gửi tới " + job.getCompanyName());
+                    } else {
+                        showWarning("Bạn đã ứng tuyển vị trí này");
+                    }
+                } catch (Exception ex) {
+                    showWarning(ex.getMessage());
+                    throw new RuntimeException(ex);
+                }
+
+
+            }
+        });
     }
 
     // --- UI Helpers ---
