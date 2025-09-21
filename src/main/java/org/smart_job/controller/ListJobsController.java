@@ -9,14 +9,14 @@ import org.smart_job.service.impl.SkillServiceImpl;
 import org.smart_job.view.jobs.ListJobsContentPannel;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ListJobsController {
     private final ListJobsContentPannel view;
     private final JobService jobService;
     private final SkillService skillService;
-    private Map<String, Set<String>> countryCityMap = new HashMap<>();
 
     public ListJobsController(ListJobsContentPannel view) {
         this.view = view;
@@ -27,28 +27,34 @@ public class ListJobsController {
 
     private void init() {
         try {
-            // Load filters
+            // Load countries & cities
             loadFilters();
 
-            // Disable city lúc đầu
-            view.getCityComboBox().setEnabled(false);
+            // Load initial jobs page 1
+            loadJobs(1);
 
-            // Event khi chọn country
+            // Search button
+            view.getSearchButton().addActionListener(e -> loadJobs(1));
+
+            // Pagination buttons
+            view.getFirstPageButton().addActionListener(e -> loadJobs(1));
+            view.getPrevPageButton().addActionListener(e -> {
+                if (view.currentPage > 1) loadJobs(view.currentPage - 1);
+            });
+            view.getNextPageButton().addActionListener(e -> {
+                if (view.currentPage < view.totalPages) loadJobs(view.currentPage + 1);
+            });
+            view.getLastPageButton().addActionListener(e -> loadJobs(view.totalPages));
+
+            // Country selection updates city list
             view.getCountryComboBox().addActionListener(e -> {
-                String selectedCountry = (String) view.getCountryComboBox().getSelectedItem();
-                updateCitiesForCountry(selectedCountry);
+                try {
+                    updateCityComboBox();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             });
 
-            // Load initial jobs
-            loadJobs("", "All Countries", "All Cities");
-
-            // Search event
-            view.getSearchButton().addActionListener(e -> {
-                String keyword = view.getSearchText().trim();
-                String country = (String) view.getCountryComboBox().getSelectedItem();
-                String city = (String) view.getCityComboBox().getSelectedItem();
-                loadJobs(keyword, country, city);
-            });
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(view,
@@ -58,97 +64,84 @@ public class ListJobsController {
     }
 
     private void loadFilters() throws Exception {
-        // Lấy location từ DB
-        List<String> locations = jobService.getUniqueLocations(); // ví dụ "Hanoi, Vietnam"
+        List<String> locations = jobService.getUniqueLocations(); // format: "City, Country"
+        Set<String> countries = locations.stream()
+                .map(loc -> loc.contains(",") ? loc.split(",")[1].trim() : loc.trim())
+                .collect(Collectors.toSet());
 
-        countryCityMap.clear();
-        for (String loc : locations) {
-            if (!loc.contains(",")) continue;
-            String[] parts = loc.split(",");
-            String city = parts[0].trim();
-            String country = parts[1].trim();
+        view.getCountryComboBox().removeAllItems();
+        view.getCountryComboBox().addItem("All Countries");
+        countries.forEach(view.getCountryComboBox()::addItem);
 
-            countryCityMap.computeIfAbsent(country, k -> new HashSet<>()).add(city);
-        }
-
-        // Load country
-        JComboBox<String> countryBox = view.getCountryComboBox();
-        countryBox.removeAllItems();
-        countryBox.addItem("All Countries");
-        for (String country : countryCityMap.keySet()) {
-            countryBox.addItem(country);
-        }
-
-        // Reset city
-        updateCitiesForCountry("All Countries");
+        updateCityComboBox(); // load cities trong current country
     }
 
-    private void updateCitiesForCountry(String country) {
-        JComboBox<String> cityBox = view.getCityComboBox();
-        cityBox.removeAllItems();
+    private void updateCityComboBox() throws Exception {
+        String selectedCountry = (String) view.getCountryComboBox().getSelectedItem();
+        view.getCityComboBox().removeAllItems();
+        view.getCityComboBox().addItem("All Cities");
 
-        if (country == null || "All Countries".equals(country)) {
-            cityBox.addItem("All Cities");
-            cityBox.setEnabled(false);
-        } else {
-            cityBox.addItem("All Cities");
-            for (String city : countryCityMap.getOrDefault(country, Collections.emptySet())) {
-                cityBox.addItem(city);
-            }
-            cityBox.setEnabled(true);
-        }
+        List<String> locations = jobService.getUniqueLocations();
+        Set<String> cities = locations.stream()
+                .filter(loc -> "All Countries".equals(selectedCountry) || loc.endsWith(selectedCountry))
+                .map(loc -> loc.contains(",") ? loc.split(",")[0].trim() : loc.trim())
+                .collect(Collectors.toSet());
+
+        cities.forEach(view.getCityComboBox()::addItem);
+
+        view.getCityComboBox().setEnabled(!"All Countries".equals(selectedCountry));
     }
 
-    private void loadJobs(String jobTitle, String country, String city) {
+    private void loadJobs(int page) {
         view.clearJobs();
-
         try {
-            // Lấy tất cả jobs từ DB một lần
-            List<Job> jobs = jobService.getAllJobs();
+            String keyword = view.getSearchText().trim();
+            String country = (String) view.getCountryComboBox().getSelectedItem();
+            String city = (String) view.getCityComboBox().getSelectedItem();
 
-            // Lọc bằng Stream
-            jobs = jobs.stream()
-                    .filter(job -> {
-                        if (jobTitle != null && !jobTitle.isEmpty()) {
-                            return job.getTitle().toLowerCase().contains(jobTitle.toLowerCase());
-                        }
-                        return true;
-                    })
-                    .filter(job -> {
-                        if (country != null && !"All Countries".equals(country)) {
-                            return country.equalsIgnoreCase(job.getCountry());
-                        }
-                        return true;
-                    })
-                    .filter(job -> {
-                        if (city != null && !"All Cities".equals(city)) {
-                            return city.equalsIgnoreCase(job.getCity());
-                        }
-                        return true;
-                    })
-                    .collect(Collectors.toList());
+            // get all matching jobs
+            List<Job> allJobs;
 
-            // Render jobs
-            for (Job job : jobs) {
+            if (!keyword.isEmpty()) {
+                allJobs = jobService.searchJobs(keyword);
+            } else if (!"All Countries".equals(country) && !"All Cities".equals(city)) {
+                allJobs = jobService.findByLocation(country, city);
+            } else if (!"All Countries".equals(country)) {
+                allJobs = jobService.findByCountry(country);
+            } else if (!"All Cities".equals(city)) {
+                allJobs = jobService.findByCity(city);
+            } else {
+                allJobs = jobService.getAllJobs();
+            }
+
+            // Pagination logic
+            int total = allJobs.size();
+            view.totalPages = (int) Math.ceil((double) total / view.pageSize);
+            view.currentPage = Math.min(Math.max(page, 1), view.totalPages);
+
+            int start = (view.currentPage - 1) * view.pageSize;
+            int end = Math.min(start + view.pageSize, total);
+
+            List<Job> jobsPage = allJobs.subList(start, end);
+
+            // Display jobs
+            for (Job job : jobsPage) {
                 List<String> skills = skillService.getSkillsByJobId(job.getId())
                         .stream()
                         .map(Skill::getName)
                         .collect(Collectors.toList());
-
                 String matchPercent = (50 + (int) (Math.random() * 50)) + "%";
-
                 view.addJobCard(job, matchPercent, skills);
             }
 
+            // Update page label
+            view.getPageLabel().setText("Page " + view.currentPage + " / " + view.totalPages);
+
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(
-                    view,
+            JOptionPane.showMessageDialog(view,
                     "Error loading jobs: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }

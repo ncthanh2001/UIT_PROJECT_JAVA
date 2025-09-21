@@ -15,6 +15,17 @@ public class ListJobsContentPannel extends JPanel {
     private final JComboBox<String> countryComboBox;
     private final JComboBox<String> cityComboBox;
     private final JButton searchButton;
+
+    // Pagination control
+    private final JButton firstPageButton;
+    private final JButton prevPageButton;
+    private final JButton nextPageButton;
+    private final JButton lastPageButton;
+    private final JLabel pageLabel;
+    public int currentPage = 1; // Mặc định chọn page 1
+    public int totalPages = 1; // Khởi tạo tổng page
+    public final int pageSize = 10; // Số lượng jobs trong 1 page
+
     private final JLabel jobCountLabel;
     private final JPanel jobsContainer;
 
@@ -53,35 +64,31 @@ public class ListJobsContentPannel extends JPanel {
         filterPanel.setBackground(Color.WHITE);
         ((TitledBorder) filterPanel.getBorder()).setTitleColor(Color.BLACK);
 
-        // hàng đầu: search field
+        // Hàng 1: search field
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         row1.setBackground(Color.WHITE);
         searchField = new JTextField(25);
-        searchField.setToolTipText("Search jobs title");
+        searchField.setToolTipText("Search job title");
         row1.add(searchField);
 
-        // Hàng 2: country + city ---
+        // Hàng 2: country + city
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         row2.setBackground(Color.WHITE);
-
         countryComboBox = new JComboBox<>();
         countryComboBox.addItem("All Countries");
-
         cityComboBox = new JComboBox<>();
         cityComboBox.addItem("All Cities");
-
         row2.add(new JLabel("Country:"));
         row2.add(countryComboBox);
         row2.add(new JLabel("City:"));
         row2.add(cityComboBox);
 
-        // Hàng 3: nút search
+        // Hàng 3: search button
         JPanel row3 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         row3.setBackground(Color.WHITE);
         searchButton = new JButton("Search");
         row3.add(searchButton);
 
-// add vào filter panel
         filterPanel.add(row1);
         filterPanel.add(row2);
         filterPanel.add(row3);
@@ -110,6 +117,22 @@ public class ListJobsContentPannel extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         listPanel.add(scrollPane, BorderLayout.CENTER);
 
+        // Pagination panel
+        JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        paginationPanel.setBackground(Color.WHITE);
+        firstPageButton = new JButton("<< First");
+        prevPageButton = new JButton("< Prev");
+        pageLabel = new JLabel("Page 1 / 1");
+        nextPageButton = new JButton("Next >");
+        lastPageButton = new JButton("Last >>");
+        paginationPanel.add(firstPageButton);
+        paginationPanel.add(prevPageButton);
+        paginationPanel.add(pageLabel);
+        paginationPanel.add(nextPageButton);
+        paginationPanel.add(lastPageButton);
+
+        listPanel.add(paginationPanel, BorderLayout.SOUTH);
+
         add(topPanel, BorderLayout.NORTH);
         add(listPanel, BorderLayout.CENTER);
     }
@@ -118,7 +141,6 @@ public class ListJobsContentPannel extends JPanel {
         JPanel jobCard = new JPanel(new BorderLayout(10, 10));
         jobCard.setBackground(Color.WHITE);
         jobCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
-
         jobCard.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.GRAY, 1, true),
                 new EmptyBorder(10, 15, 10, 15)
