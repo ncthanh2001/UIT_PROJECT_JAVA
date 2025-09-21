@@ -4,6 +4,7 @@
 DELETE FROM job_skills;
 DELETE FROM jobs;
 DELETE FROM skills;
+DELETE FROM job_application;
 
 -- Reset auto increment
 ALTER TABLE job_skills AUTO_INCREMENT = 1;
