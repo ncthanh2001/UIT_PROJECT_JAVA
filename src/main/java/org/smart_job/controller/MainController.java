@@ -10,6 +10,7 @@ import org.smart_job.view.auth.LoginView;
 import org.smart_job.view.auth.RegisterView;
 import org.smart_job.view.dashboard.DashboardContentPanel;
 import org.smart_job.view.jobs.JobTrackerContentPanel;
+import org.smart_job.view.jobs.ListJobsContentPannel;
 import org.smart_job.view.profile.ProfileContentPanel;
 
 public class MainController {
@@ -38,8 +39,9 @@ public class MainController {
 
     private void registerEvents() {
         view.getDashboardButton().addActionListener(e -> showDashboard());
-        view.getCvAnalysisButton().addActionListener(e -> showCVAnalysis());
         view.getJobTrackerButton().addActionListener(e -> showJobTracker());
+        view.getJobsButton().addActionListener(e -> showListJobs());
+        view.getCvAnalysisButton().addActionListener(e -> showCVAnalysis());
         view.getProfileButton().addActionListener(e -> showProfile());
         view.getLogoutButton().addActionListener(e -> {
             logout();
@@ -68,6 +70,14 @@ public class MainController {
 
         JobTrackerContentPanel panel = new JobTrackerContentPanel();
         new JobsTrackerController(panel);
+        view.setContent(panel);
+    }
+
+    private void showListJobs() {
+        view.setVisible(true);
+        System.out.println("showListJobs");
+        ListJobsContentPannel panel = new ListJobsContentPannel();
+        new ListJobsController(panel);
         view.setContent(panel);
     }
 
