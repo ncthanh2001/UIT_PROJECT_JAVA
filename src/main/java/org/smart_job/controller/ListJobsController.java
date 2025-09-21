@@ -1,14 +1,17 @@
 package org.smart_job.controller;
 
-import org.smart_job.entity.Job;
-import org.smart_job.entity.Skill;
+import org.smart_job.entity.*;
+import org.smart_job.service.JobApplicationService;
 import org.smart_job.service.JobService;
 import org.smart_job.service.SkillService;
+import org.smart_job.service.impl.JobApplicationImpl;
 import org.smart_job.service.impl.JobServiceImpl;
 import org.smart_job.service.impl.SkillServiceImpl;
+import org.smart_job.session.UserSession;
 import org.smart_job.view.jobs.ListJobsContentPannel;
 
 import javax.swing.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,11 +20,13 @@ public class ListJobsController {
     private final ListJobsContentPannel view;
     private final JobService jobService;
     private final SkillService skillService;
+    private final JobApplicationService jobApplicationService;
 
     public ListJobsController(ListJobsContentPannel view) {
         this.view = view;
         this.jobService = new JobServiceImpl();
         this.skillService = new SkillServiceImpl();
+        this.jobApplicationService = new JobApplicationImpl();
         init();
     }
 
@@ -54,6 +59,7 @@ public class ListJobsController {
                     ex.printStackTrace();
                 }
             });
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -132,6 +138,40 @@ public class ListJobsController {
                         .collect(Collectors.toList());
                 String matchPercent = (50 + (int) (Math.random() * 50)) + "%";
                 view.addJobCard(job, matchPercent, skills);
+
+                // Attach Apply action
+                view.getApplyBtn().addActionListener(e -> {
+                    int result = showConfirmDialog("Xác nhận ứng tuyển", "Bạn có chắc muốn gửi CV tới " + job.getCompanyName() + "?");
+
+                    if (result == JOptionPane.YES_OPTION) {
+                        try {
+                            User currentUser = UserSession.getInstance().getCurrentUser();
+
+                            JobApplication newJobApplication = new JobApplication();
+                            newJobApplication.setUserId(currentUser.getId());
+                            newJobApplication.setJobId(job.getId());
+                            newJobApplication.setCustomTitle(job.getTitle());
+                            newJobApplication.setCustomCompany(job.getCompanyName());
+                            newJobApplication.setCustomDescription(job.getDescription());
+                            newJobApplication.setCustomUrl(job.getUrl());
+                            newJobApplication.setApplicationDate(LocalDateTime.now());
+                            newJobApplication.setStatus(JobStatus.APPLIED);
+                            newJobApplication.setNotes(""); // TODO: option notes
+
+                            JobApplication res = jobApplicationService.insert(newJobApplication);
+                            if (res != null) {
+                                showSuccess("CV của bạn đã được gửi tới " + job.getCompanyName());
+                            } else {
+                                showWarning("Bạn đã ứng tuyển vị trí này");
+                            }
+                        } catch (Exception ex) {
+                            showWarning(ex.getMessage());
+                            throw new RuntimeException(ex);
+                        }
+
+
+                    }
+                });
             }
 
             // Update page label
@@ -139,9 +179,24 @@ public class ListJobsController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(view,
-                    "Error loading jobs: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            showError("Error loading jobs: " + e.getMessage());
         }
+    }
+
+    // --- UI Helpers ---
+    private void showSuccess(String message) {
+        JOptionPane.showMessageDialog(view, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showWarning(String message) {
+        JOptionPane.showMessageDialog(view, message, "Error", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(view, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private int showConfirmDialog(String title, String message) {
+        return JOptionPane.showConfirmDialog(view, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
     }
 }

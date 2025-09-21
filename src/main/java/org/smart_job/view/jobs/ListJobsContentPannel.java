@@ -15,6 +15,8 @@ public class ListJobsContentPannel extends JPanel {
     private final JComboBox<String> countryComboBox;
     private final JComboBox<String> cityComboBox;
     private final JButton searchButton;
+    private JButton detailBtn;
+    private JButton applyBtn;
 
     // Pagination control
     private final JButton firstPageButton;
@@ -190,8 +192,8 @@ public class ListJobsContentPannel extends JPanel {
         skillsLabel.setFont(new Font("Arial", Font.PLAIN, 12));
 
         // Actions
-        JButton detailBtn = new JButton("View Details");
-        JButton applyBtn = new JButton("Apply Now");
+        detailBtn = new JButton("View Details");
+        applyBtn = new JButton("Apply Now");
         applyBtn.setBackground(new Color(0, 128, 0));
         applyBtn.setForeground(Color.WHITE);
 
@@ -200,13 +202,6 @@ public class ListJobsContentPannel extends JPanel {
                         "\nLocation: " + job.getCity() + ", " + job.getCountry() +
                         "\nURL: " + job.getUrl() +
                         "\nSkills: " + String.join(", ", skills)
-        ));
-
-        applyBtn.addActionListener(e -> JOptionPane.showMessageDialog(
-                this,
-                "CV của bạn đã được gửi tới " + job.getCompanyName() + ".",
-                "Ứng tuyển thành công",
-                JOptionPane.INFORMATION_MESSAGE
         ));
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
