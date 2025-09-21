@@ -12,6 +12,8 @@ import java.util.List;
 @Getter
 public class ListJobsContentPannel extends JPanel {
     private final JTextField searchField;
+    private final JComboBox<String> countryComboBox;
+    private final JComboBox<String> cityComboBox;
     private final JButton searchButton;
     private final JLabel jobCountLabel;
     private final JPanel jobsContainer;
@@ -28,8 +30,8 @@ public class ListJobsContentPannel extends JPanel {
     }
 
     public ListJobsContentPannel() {
-        setLayout(new BorderLayout(15, 15));
-        setBorder(new EmptyBorder(20, 20, 20, 20));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(new EmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
 
         // Title & Subtitle
@@ -45,17 +47,44 @@ public class ListJobsContentPannel extends JPanel {
         headerPanel.add(subtitle, BorderLayout.SOUTH);
 
         // Filter Panel
-        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JPanel filterPanel = new JPanel();
+        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
         filterPanel.setBorder(BorderFactory.createTitledBorder("Filter & Search"));
         filterPanel.setBackground(Color.WHITE);
         ((TitledBorder) filterPanel.getBorder()).setTitleColor(Color.BLACK);
 
+        // hàng đầu: search field
+        JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        row1.setBackground(Color.WHITE);
         searchField = new JTextField(25);
-        searchField.setToolTipText("Search company name and jobs");
-        searchButton = new JButton("Search");
+        searchField.setToolTipText("Search jobs title");
+        row1.add(searchField);
 
-        filterPanel.add(searchField);
-        filterPanel.add(searchButton);
+        // Hàng 2: country + city ---
+        JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        row2.setBackground(Color.WHITE);
+
+        countryComboBox = new JComboBox<>();
+        countryComboBox.addItem("All Countries");
+
+        cityComboBox = new JComboBox<>();
+        cityComboBox.addItem("All Cities");
+
+        row2.add(new JLabel("Country:"));
+        row2.add(countryComboBox);
+        row2.add(new JLabel("City:"));
+        row2.add(cityComboBox);
+
+        // Hàng 3: nút search
+        JPanel row3 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        row3.setBackground(Color.WHITE);
+        searchButton = new JButton("Search");
+        row3.add(searchButton);
+
+// add vào filter panel
+        filterPanel.add(row1);
+        filterPanel.add(row2);
+        filterPanel.add(row3);
 
         // Header + Filter
         JPanel topPanel = new JPanel(new BorderLayout(10, 10));
