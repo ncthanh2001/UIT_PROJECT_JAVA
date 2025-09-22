@@ -5,12 +5,16 @@ import lombok.Getter;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.List;
 
 @Getter
 public class CVAnalysisContentPanel extends JPanel {
     private JLabel dropLabel;
     private JButton chooseFileButton;
-    private JLabel uploadedFileLabel; // hiển thị file đã upload
+    private JLabel uploadedFileLabel;
+
+    // Listener cho kéo–thả file
+    private FileDropListener fileDropListener;
 
     public CVAnalysisContentPanel() {
         initCVAnalysis();
@@ -51,7 +55,31 @@ public class CVAnalysisContentPanel extends JPanel {
         dropLabel.setFont(new Font("Arial", Font.BOLD, 16));
         dropPanel.add(dropLabel, BorderLayout.CENTER);
 
-        // Text under drop
+        // Enable drop
+        dropLabel.setTransferHandler(new TransferHandler() {
+            @Override
+            public boolean canImport(TransferSupport support) {
+                return support.isDataFlavorSupported(java.awt.datatransfer.DataFlavor.javaFileListFlavor);
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public boolean importData(TransferSupport support) {
+                try {
+                    List<File> droppedFiles = (List<File>)
+                            support.getTransferable().getTransferData(java.awt.datatransfer.DataFlavor.javaFileListFlavor);
+
+                    if (!droppedFiles.isEmpty() && fileDropListener != null) {
+                        fileDropListener.onFileDropped(droppedFiles.get(0));
+                    }
+                    return true;
+                } catch (Exception e) {
+                    showMessage("Error: " + e.getMessage());
+                    return false;
+                }
+            }
+        });
+
         JLabel orLabel = new JLabel("or select file from computer", SwingConstants.CENTER);
         orLabel.setForeground(Color.RED);
         JLabel hintLabel = new JLabel("Support PDF (max 10MB)", SwingConstants.CENTER);
@@ -72,9 +100,8 @@ public class CVAnalysisContentPanel extends JPanel {
         uploadPanel.add(Box.createVerticalStrut(10));
         uploadPanel.add(chooseFileButton);
         uploadPanel.add(Box.createVerticalStrut(20));
-        uploadPanel.add(uploadedFileLabel); // thêm label hiển thị file
+        uploadPanel.add(uploadedFileLabel);
 
-        // Wrap all
         JPanel wrapper = new JPanel();
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
         wrapper.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
@@ -102,5 +129,15 @@ public class CVAnalysisContentPanel extends JPanel {
 
     public void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
+    }
+
+    // Gắn listener từ Controller
+    public void setFileDropListener(FileDropListener listener) {
+        this.fileDropListener = listener;
+    }
+
+    // Interface để Controller xử lý
+    public interface FileDropListener {
+        void onFileDropped(File file);
     }
 }

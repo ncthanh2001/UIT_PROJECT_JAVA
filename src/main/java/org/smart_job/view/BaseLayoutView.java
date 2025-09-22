@@ -13,7 +13,7 @@ public class BaseLayoutView extends JFrame {
     private final JButton jobsButton;
     private final JButton cvAnalysisButton;
     private final JButton profileButton;
-    private final JButton loginButton;
+    private final JButton logoutButton;
     private final JButton jobTrackerButton;
 
 
@@ -34,13 +34,14 @@ public class BaseLayoutView extends JFrame {
         jobsButton = createNavButton("Jobs");
         cvAnalysisButton = createNavButton("CV Analysis");
         profileButton = createNavButton("Profile");
-        loginButton = createNavButton("Login");
+        logoutButton = createNavButton("Logout");
+
         sidebar.add(dashboardButton);
         sidebar.add(jobTrackerButton);
         sidebar.add(jobsButton);
         sidebar.add(cvAnalysisButton);
         sidebar.add(profileButton);
-        sidebar.add(loginButton);
+        sidebar.add(logoutButton);
         add(sidebar, BorderLayout.WEST);
 
         // Content panel placeholder
