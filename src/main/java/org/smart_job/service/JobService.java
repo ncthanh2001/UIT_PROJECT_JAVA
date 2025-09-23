@@ -1,10 +1,11 @@
-package org.smart_job.dao;
+package org.smart_job.service;
 
 import org.smart_job.entity.Job;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface JobDAO extends GenericDAO<Job, Integer> {
+public interface JobService {
     // Location-based queries
     List<Job> findByCountry(String country) throws Exception;
     List<Job> findByCity(String city) throws Exception;
@@ -15,6 +16,7 @@ public interface JobDAO extends GenericDAO<Job, Integer> {
     List<Job> findByCompanyNameContaining(String keyword) throws Exception;
 
     // Title and description search
+    List<Job> getAllJobs() throws Exception;
     List<Job> findByTitleContaining(String keyword) throws Exception;
     List<Job> searchInDescription(String keyword) throws Exception;
     List<Job> searchJobs(String keyword) throws Exception; // Combined search
@@ -41,4 +43,3 @@ public interface JobDAO extends GenericDAO<Job, Integer> {
     int countJobs(String keyword, String country, String city) throws Exception;
 
 }
-

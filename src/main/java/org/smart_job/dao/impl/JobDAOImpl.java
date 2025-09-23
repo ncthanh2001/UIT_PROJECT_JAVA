@@ -625,6 +625,89 @@ public class JobDAOImpl implements JobDAO {
             if (conn != null) conn.close();
         }
     }
+    @Override
+    public List<Job> findJobs(String keyword, String country, String city, int page, int pageSize) throws Exception {
+        Connection conn = null;
+        ResultSet rs = null;
+        List<Job> jobs = new ArrayList<>();
+
+        try {
+            conn = JdbcUtils.getConnection();
+
+            // Build dynamic SQL
+            StringBuilder sql = new StringBuilder("SELECT * FROM jobs WHERE 1=1");
+            List<Object> params = new ArrayList<>();
+
+            if (keyword != null && !keyword.isEmpty()) {
+                sql.append(" AND title LIKE ?");
+                params.add("%" + keyword + "%");
+            }
+
+            if (country != null && !country.isEmpty()) {
+                sql.append(" AND country = ?");
+                params.add(country);
+            }
+
+            if (city != null && !city.isEmpty()) {
+                sql.append(" AND city = ?");
+                params.add(city);
+            }
+
+            sql.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
+            params.add(pageSize);
+            params.add((page - 1) * pageSize);
+
+            rs = JdbcUtils.executeQuery(conn, sql.toString(), params.toArray());
+
+            while (rs.next()) {
+                jobs.add(mapResultSetToJob(rs));
+            }
+
+            return jobs;
+        } finally {
+            if (rs != null) rs.close();
+            if (conn != null) conn.close();
+        }
+    }
+
+    @Override
+    public int countJobs(String keyword, String country, String city) throws Exception {
+        Connection conn = null;
+        ResultSet rs = null;
+
+        try {
+            conn = JdbcUtils.getConnection();
+
+            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM jobs WHERE 1=1");
+            List<Object> params = new ArrayList<>();
+
+            if (keyword != null && !keyword.isEmpty()) {
+                sql.append(" AND title LIKE ?");
+                params.add("%" + keyword + "%");
+            }
+
+            if (country != null && !country.isEmpty()) {
+                sql.append(" AND country = ?");
+                params.add(country);
+            }
+
+            if (city != null && !city.isEmpty()) {
+                sql.append(" AND city = ?");
+                params.add(city);
+            }
+
+            rs = JdbcUtils.executeQuery(conn, sql.toString(), params.toArray());
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+            return 0;
+        } finally {
+            if (rs != null) rs.close();
+            if (conn != null) conn.close();
+        }
+    }
 
     private Job mapResultSetToJob(ResultSet rs) throws SQLException {
         Job job = new Job();

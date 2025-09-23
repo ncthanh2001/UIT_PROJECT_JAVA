@@ -39,7 +39,38 @@ public class JdbcUtils {
                 }
             }
 
-            System.out.println("Database tables initialized!");
+            System.out.println("Database: Tables initialized!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    ///
+    /// - Dùng để seed data cho các entity (Job, Jobs, JobSkills)
+    ///
+    /// - Mỗi lần chạy sẽ xóa toàn bộ data của các entity (Job, Jobs, JobSkills) và seed
+    ///
+    public static void seedJobsData() {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement()) {
+
+            InputStream is = JdbcUtils.class.getClassLoader().getResourceAsStream("sql/seed_data.sql");
+            if (is == null) {
+                throw new RuntimeException("Cannot find seed_data.sql");
+            }
+
+            String sql = new BufferedReader(new InputStreamReader(is))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
+
+            for (String s : sql.split(";")) {
+                if (!s.trim().isEmpty()) {
+                    stmt.execute(s);
+                }
+            }
+
+            System.out.println("Database: Seed (Job, Jobs, JobSkills) completed!");
 
         } catch (Exception e) {
             e.printStackTrace();
