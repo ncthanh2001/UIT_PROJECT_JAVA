@@ -11,6 +11,7 @@ import org.smart_job.view.auth.RegisterView;
 import org.smart_job.view.dashboard.DashboardContentPanel;
 import org.smart_job.view.jobs.JobTrackerContentPanel;
 import org.smart_job.view.profile.ProfileContentPanel;
+import org.smart_job.service.impl.UserServiceImpl;
 
 public class MainController {
     @Getter
@@ -75,9 +76,13 @@ public class MainController {
         view.setVisible(true);
 
         ProfileContentPanel panel = new ProfileContentPanel();
-        new ProfileController(panel);
+        var currentUser = UserSession.getInstance().getCurrentUser();
+        var userService = new UserServiceImpl();
+
+        new ProfileController(panel, userService, currentUser);
         view.setContent(panel);
     }
+
 
     public void showLogin() {
         view.setVisible(false);
