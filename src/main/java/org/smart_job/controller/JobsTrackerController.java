@@ -19,8 +19,7 @@ import java.util.Objects;
 
 public class JobsTrackerController {
     private static final Logger logger = LogManager.getLogger(JobsTrackerController.class);
-    private static final String LOCATION_PREFIX = "Location:";
-    
+
     private final JobTrackerContentPanel view;
     private final JobApplicationService jobApplicationService;
     private final User currentUser;
@@ -93,7 +92,6 @@ public class JobsTrackerController {
                 job.getId(),
                 job.getCompanyName(),
                 job.getJobTitle(),
-                job.getLocation(),
                 DateUtils.formatForDisplay(job.getApplicationDate().toLocalDate()),
                 job.getStatus() != null ? job.getStatus().getDisplayName() : JobStatus.APPLIED.getDisplayName()
             });
@@ -244,14 +242,13 @@ public class JobsTrackerController {
 
     private boolean validateForm() {
         if (!view.isFormValid()) {
-            view.showValidationError("Please fill in all required fields:\n- Company\n- Job Title\n- Location");
+            view.showValidationError("Please fill in all required fields:\n- Company\n- Job Title");
             return false;
         }
         
         String company = view.getCompanyField().getText().trim();
         String title = view.getTitleField().getText().trim();
-        String location = view.getLocationField().getText().trim();
-        
+
         if (company.isEmpty()) {
             view.showValidationError("Company name is required.");
             view.focusCompanyField();
@@ -261,12 +258,6 @@ public class JobsTrackerController {
         if (title.isEmpty()) {
             view.showValidationError("Job title is required.");
             view.focusTitleField();
-            return false;
-        }
-        
-        if (location.isEmpty()) {
-            view.showValidationError("Location is required.");
-            view.focusLocationField();
             return false;
         }
         
@@ -284,52 +275,10 @@ public class JobsTrackerController {
         job.setCustomTitle(view.getTitleField().getText().trim());
         job.setCustomUrl(view.getUrlField().getText().trim());
         job.setCustomDescription(view.getDescriptionArea().getText().trim());
-        
-        // Handle location and notes
-        String notes = handleLocationInNotes();
-        job.setNotes(notes);
-        
+        job.setNotes(view.getNotesArea().getText().trim());
+
         // Handle status
         setJobStatus(job);
-    }
-    
-    private String handleLocationInNotes() {
-        String location = view.getLocationField().getText().trim();
-        String notes = view.getNotesArea().getText().trim();
-        
-        if (location.isEmpty()) {
-            return notes;
-        }
-        
-        // Remove existing location from notes if present
-        if (notes.contains(LOCATION_PREFIX)) {
-            notes = removeLocationFromNotes(notes);
-        }
-        
-        // Add location to notes
-        return addLocationToNotes(notes, location);
-    }
-    
-    private String removeLocationFromNotes(String notes) {
-        String[] lines = notes.split("\n");
-        StringBuilder newNotes = new StringBuilder();
-        for (String line : lines) {
-            if (!line.trim().startsWith(LOCATION_PREFIX)) {
-                if (newNotes.length() > 0) {
-                    newNotes.append("\n");
-                }
-                newNotes.append(line);
-            }
-        }
-        return newNotes.toString().trim();
-    }
-    
-    private String addLocationToNotes(String notes, String location) {
-        if (!notes.isEmpty()) {
-            return notes + "\n" + LOCATION_PREFIX + " " + location;
-        } else {
-            return LOCATION_PREFIX + " " + location;
-        }
     }
     
     private void setJobStatus(JobApplication job) {
@@ -351,7 +300,6 @@ public class JobsTrackerController {
     private void populateFormWithSelectedJob(JobApplication job) {
         view.getCompanyField().setText(job.getCompanyName() != null ? job.getCompanyName() : "");
         view.getTitleField().setText(job.getJobTitle() != null ? job.getJobTitle() : "");
-        view.getLocationField().setText(job.getLocation() != null ? job.getLocation() : "");
         view.getUrlField().setText(job.getJobUrl() != null ? job.getJobUrl() : "");
         view.getDescriptionArea().setText(job.getJobDescription() != null ? job.getJobDescription() : "");
         view.getNotesArea().setText(job.getNotes() != null ? job.getNotes() : "");

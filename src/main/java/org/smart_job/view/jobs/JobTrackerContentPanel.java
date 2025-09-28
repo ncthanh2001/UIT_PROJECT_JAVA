@@ -25,7 +25,6 @@ public class JobTrackerContentPanel extends JPanel {
     // Form components for CRUD operations
     private JTextField companyField;
     private JTextField titleField;
-    private JTextField locationField;
     private JTextField urlField;
     private JTextArea descriptionArea;
     private JComboBox<String> statusComboBox;
@@ -84,10 +83,6 @@ public class JobTrackerContentPanel extends JPanel {
         titleField.setPreferredSize(new Dimension(200, 25));
         titleField.setMinimumSize(new Dimension(150, 25));
         
-        locationField = new JTextField(20);
-        locationField.setPreferredSize(new Dimension(200, 25));
-        locationField.setMinimumSize(new Dimension(150, 25));
-        
         urlField = new JTextField(20);
         urlField.setPreferredSize(new Dimension(200, 25));
         urlField.setMinimumSize(new Dimension(150, 25));
@@ -118,7 +113,7 @@ public class JobTrackerContentPanel extends JPanel {
         clearButton = createStyledButton("Clear Form", new Color(149, 165, 166));
 
         // Initialize table
-        String[] columnNames = {"ID", "Company", "Job Title", "Location", "Date Applied", "Status"};
+        String[] columnNames = {"ID", "Company", "Job Title", "Date Applied", "Status"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -131,13 +126,12 @@ public class JobTrackerContentPanel extends JPanel {
         jobTable.getTableHeader().setReorderingAllowed(false);
 
         // Set column widths
-        if (jobTable.getColumnModel().getColumnCount() >= 6) {
+        if (jobTable.getColumnModel().getColumnCount() >= 5) {
             jobTable.getColumnModel().getColumn(0).setPreferredWidth(50);  // ID
-            jobTable.getColumnModel().getColumn(1).setPreferredWidth(120); // Company
-            jobTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Job Title
-            jobTable.getColumnModel().getColumn(3).setPreferredWidth(120); // Location
-            jobTable.getColumnModel().getColumn(4).setPreferredWidth(100); // Date Applied
-            jobTable.getColumnModel().getColumn(5).setPreferredWidth(80);  // Status
+            jobTable.getColumnModel().getColumn(1).setPreferredWidth(150); // Company
+            jobTable.getColumnModel().getColumn(2).setPreferredWidth(200); // Job Title
+            jobTable.getColumnModel().getColumn(3).setPreferredWidth(120); // Date Applied
+            jobTable.getColumnModel().getColumn(4).setPreferredWidth(100); // Status
         }
     }
 
@@ -251,29 +245,21 @@ public class JobTrackerContentPanel extends JPanel {
         gbc.weightx = 1.0;
         formPanel.add(titleField, gbc);
 
-        // Row 1: Location and URL
+        // Row 1: URL
         gbc.gridx = 0; gbc.gridy = 1;
         gbc.weightx = 0.0;
-        formPanel.add(new JLabel("Location:"), gbc);
-        gbc.gridx = 1;
-        gbc.weightx = 1.0;
-        formPanel.add(locationField, gbc);
-        gbc.gridx = 2;
-        gbc.weightx = 0.0;
         formPanel.add(new JLabel("URL:"), gbc);
-        gbc.gridx = 3;
+        gbc.gridx = 1;
         gbc.weightx = 1.0;
         formPanel.add(urlField, gbc);
-
-        // Row 2: Status
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 2;
         gbc.weightx = 0.0;
         formPanel.add(new JLabel("Status:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 3;
         gbc.weightx = 1.0;
         formPanel.add(statusComboBox, gbc);
 
-        // Row 3: Description
+        // Row 2: Description
         gbc.gridx = 0; gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         formPanel.add(new JLabel("Description:"), gbc);
@@ -282,7 +268,7 @@ public class JobTrackerContentPanel extends JPanel {
         gbc.weightx = 1.0; gbc.weighty = 0.3;
         formPanel.add(new JScrollPane(descriptionArea), gbc);
 
-        // Row 4: Notes
+        // Row 3: Notes
         gbc.gridx = 0; gbc.gridy = 4;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
@@ -336,7 +322,6 @@ public class JobTrackerContentPanel extends JPanel {
     public void clearForm() {
         companyField.setText("");
         titleField.setText("");
-        locationField.setText("");
         urlField.setText("");
         descriptionArea.setText("");
         statusComboBox.setSelectedIndex(0);
@@ -344,11 +329,10 @@ public class JobTrackerContentPanel extends JPanel {
         jobTable.clearSelection();
     }
 
-    public void populateForm(String company, String title, String location,
+    public void populateForm(String company, String title,
                              String url, String description, String status, String notes) {
         companyField.setText(company);
         titleField.setText(title);
-        locationField.setText(location);
         urlField.setText(url);
         descriptionArea.setText(description);
         statusComboBox.setSelectedItem(status);
@@ -442,7 +426,7 @@ public class JobTrackerContentPanel extends JPanel {
     public boolean isFormValid() {
         return !companyField.getText().trim().isEmpty() &&
                 !titleField.getText().trim().isEmpty() &&
-                !locationField.getText().trim().isEmpty();
+                !urlField.getText().trim().isEmpty();
     }
 
     public void showValidationError(String message) {
@@ -476,6 +460,6 @@ public class JobTrackerContentPanel extends JPanel {
     }
 
     public void focusLocationField() {
-        locationField.requestFocus();
+        urlField.requestFocus();
     }
 }
