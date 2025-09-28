@@ -4,7 +4,7 @@ import org.smart_job.entity.*;
 import org.smart_job.service.JobApplicationService;
 import org.smart_job.service.JobService;
 import org.smart_job.service.SkillService;
-import org.smart_job.service.impl.JobApplicationImpl;
+import org.smart_job.service.impl.JobApplicationServiceImpl;
 import org.smart_job.service.impl.JobServiceImpl;
 import org.smart_job.service.impl.SkillServiceImpl;
 import org.smart_job.session.UserSession;
@@ -26,7 +26,7 @@ public class ListJobsController {
         this.view = view;
         this.jobService = new JobServiceImpl();
         this.skillService = new SkillServiceImpl();
-        this.jobApplicationService = new JobApplicationImpl();
+        this.jobApplicationService = new JobApplicationServiceImpl();
         init();
     }
 
@@ -157,8 +157,8 @@ public class ListJobsController {
                     newJobApplication.setStatus(JobStatus.APPLIED);
                     newJobApplication.setNotes(""); // TODO: option notes
 
-                    JobApplication res = jobApplicationService.insert(newJobApplication);
-                    if (res != null) {
+                    if (!jobApplicationService.isUserApleidJob(currentUser.getId(), job.getId())) {
+                        JobApplication res = jobApplicationService.insert(newJobApplication);
                         showSuccess("CV của bạn đã được gửi tới " + job.getCompanyName());
                     } else {
                         showWarning("Bạn đã ứng tuyển vị trí này");

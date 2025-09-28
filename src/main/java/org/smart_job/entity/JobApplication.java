@@ -56,6 +56,13 @@ public class JobApplication extends BaseEntity {
         return customUrl;
     }
 
+    public String getLocation() {
+        if (job != null && job.getLocation() != null) {
+            return job.getLocation();
+        }
+        return "";
+    }
+
     public boolean isCustomApplication() {
         return jobId == null;
     }
