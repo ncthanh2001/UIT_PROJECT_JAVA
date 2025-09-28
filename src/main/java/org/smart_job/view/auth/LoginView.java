@@ -32,6 +32,7 @@ public class LoginView extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0;
         mainPanel.add(new JLabel("Email:"), gbc);
         emailField = new JTextField(20);
+        emailField.setText("duong@gmail.com");
         gbc.gridx = 1;
         mainPanel.add(emailField, gbc);
 
@@ -39,6 +40,7 @@ public class LoginView extends JFrame {
         gbc.gridx = 0; gbc.gridy = 1;
         mainPanel.add(new JLabel("Password:"), gbc);
         passwordField = new JPasswordField(20);
+        passwordField.setText("123456");
         gbc.gridx = 1;
         mainPanel.add(passwordField, gbc);
 
