@@ -14,4 +14,5 @@ public interface JobApplicationService {
     List<JobApplication> searchJobApplications(Integer userId, String keyword) throws Exception;
     List<JobApplication> filterByStatus(Integer userId, String statusFilter) throws Exception;
     boolean updateStatus(Integer applicationId, JobStatus newStatus) throws Exception;
+    boolean isUserApleidJob(Integer userId, Integer jobId) throws Exception;
 }

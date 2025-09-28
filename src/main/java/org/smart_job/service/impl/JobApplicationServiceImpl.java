@@ -145,4 +145,15 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         logger.info("Updating job application ID: {} to status: {}", applicationId, newStatus);
         return jobApplicationDAO.updateApplicationStatus(applicationId, newStatus);
     }
+
+    public boolean isUserApleidJob(Integer userId, Integer jobId) throws Exception {
+        List<JobApplication> existingApplications = jobApplicationDAO.findByUserId(userId);
+        
+        if (existingApplications == null || existingApplications.isEmpty()) {
+            return false;
+        }
+
+        return existingApplications.stream()
+                .anyMatch(app -> app.getJobId().equals(jobId));
+    }
 }

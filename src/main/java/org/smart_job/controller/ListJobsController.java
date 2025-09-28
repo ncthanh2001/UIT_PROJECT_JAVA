@@ -157,8 +157,8 @@ public class ListJobsController {
                     newJobApplication.setStatus(JobStatus.APPLIED);
                     newJobApplication.setNotes(""); // TODO: option notes
 
-                    JobApplication res = jobApplicationService.insert(newJobApplication);
-                    if (res != null) {
+                    if (!jobApplicationService.isUserApleidJob(currentUser.getId(), job.getId())) {
+                        JobApplication res = jobApplicationService.insert(newJobApplication);
                         showSuccess("CV của bạn đã được gửi tới " + job.getCompanyName());
                     } else {
                         showWarning("Bạn đã ứng tuyển vị trí này");
