@@ -53,7 +53,12 @@ public class MainController {
     public void showDashboard() {
         view.setVisible(true);
         DashboardContentPanel panel = new DashboardContentPanel();
-        new DashboardController(panel);
+        DashboardController dashboardController = new DashboardController(panel);
+
+        // Set up navigation handlers for dashboard buttons
+        dashboardController.setNavigateToJobTracker(() -> showJobTracker());
+        dashboardController.setNavigateToCVAnalysis(() -> showCVAnalysis());
+
         view.setContent(panel);
     }
 

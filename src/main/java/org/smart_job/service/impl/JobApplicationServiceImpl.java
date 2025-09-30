@@ -9,7 +9,9 @@ import org.smart_job.entity.JobStatus;
 import org.smart_job.service.JobApplicationService;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JobApplicationServiceImpl implements JobApplicationService {
@@ -155,5 +157,86 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
         return existingApplications.stream()
                 .anyMatch(app -> app.getJobId().equals(jobId));
+    }
+
+    @Override
+    public Map<String, Object> getDashboardStats(Integer userId) throws Exception {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+
+        Map<String, Object> stats = new HashMap<>();
+        List<JobApplication> allApplications = findByUserId(userId);
+
+        stats.put("totalApplications", getTotalApplicationsCount(userId));
+        stats.put("responseRate", getResponseRate(userId));
+        stats.put("pendingResponses", getPendingResponsesCount(userId));
+        stats.put("interviewInvites", getInterviewInvitesCount(userId));
+
+        return stats;
+    }
+
+    @Override
+    public int getTotalApplicationsCount(Integer userId) throws Exception {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+
+        List<JobApplication> applications = findByUserId(userId);
+        return applications != null ? applications.size() : 0;
+    }
+
+    @Override
+    public double getResponseRate(Integer userId) throws Exception {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+
+        List<JobApplication> applications = findByUserId(userId);
+        if (applications == null || applications.isEmpty()) {
+            return 0.0;
+        }
+
+        // Count applications that have received responses (not APPLIED or WISH_LIST)
+        long responsesReceived = applications.stream()
+                .filter(app -> app.getStatus() != JobStatus.APPLIED &&
+                              app.getStatus() != JobStatus.WISH_LIST)
+                .count();
+
+        return (double) responsesReceived / applications.size() * 100;
+    }
+
+    @Override
+    public int getPendingResponsesCount(Integer userId) throws Exception {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+
+        List<JobApplication> applications = findByUserId(userId);
+        if (applications == null || applications.isEmpty()) {
+            return 0;
+        }
+
+        // Count applications that are still pending (APPLIED status)
+        return (int) applications.stream()
+                .filter(app -> app.getStatus() == JobStatus.APPLIED)
+                .count();
+    }
+
+    @Override
+    public int getInterviewInvitesCount(Integer userId) throws Exception {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+
+        List<JobApplication> applications = findByUserId(userId);
+        if (applications == null || applications.isEmpty()) {
+            return 0;
+        }
+
+        // Count applications with interview invites (INTERVIEW status)
+        return (int) applications.stream()
+                .filter(app -> app.getStatus() == JobStatus.INTERVIEW)
+                .count();
     }
 }
