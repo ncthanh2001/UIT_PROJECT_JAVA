@@ -33,7 +33,7 @@ public class ProfileContentPanel extends JPanel {
         JLabel lblCountry = new JLabel("Country:");
         JLabel lblDob = new JLabel("Date of Birth:");
 
-        // Font đồng nhất
+        // Consistent font
         Font labelFont = new Font("Segoe UI", Font.PLAIN, 14);
         lblFirstName.setFont(labelFont);
         lblLastName.setFont(labelFont);
