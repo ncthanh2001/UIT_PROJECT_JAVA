@@ -155,19 +155,6 @@ public class DashboardController {
         );
     }
 
-    private String extractFileName(String filePath) {
-        if (filePath == null || filePath.isEmpty()) {
-            return "Chưa upload";
-        }
-        int lastSlashIndex = filePath.lastIndexOf('/');
-        int lastBackslashIndex = filePath.lastIndexOf('\\');
-        int lastSeparatorIndex = Math.max(lastSlashIndex, lastBackslashIndex);
-
-        if (lastSeparatorIndex >= 0 && lastSeparatorIndex < filePath.length() - 1) {
-            return filePath.substring(lastSeparatorIndex + 1);
-        }
-        return filePath;
-    }
 
     public void refreshDashboard() {
         loadDashboardData();
