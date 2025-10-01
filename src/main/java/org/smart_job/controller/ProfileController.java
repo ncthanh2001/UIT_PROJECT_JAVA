@@ -58,7 +58,7 @@ public class ProfileController {
             String country = (String) view.getCountryComboBox().getSelectedItem();
             currentUser.setCountry(country);
 
-            // Gọi UserService update
+            // Call UserService to update the profile
             var response = userService.updateProfile(currentUser);
 
             if (response.isSuccess()) {
