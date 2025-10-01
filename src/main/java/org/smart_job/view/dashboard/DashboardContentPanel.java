@@ -372,7 +372,7 @@ public class DashboardContentPanel extends JPanel{
                                   int pendingResponses, int interviewInvites) {
         // Update header
         if (titleLabel != null) {
-            titleLabel.setText("Chào mừng chờ lại, " + userName + "!");
+            titleLabel.setText("Chào mừng trở lại, " + userName + "!");
         }
 
         // Update profile info
