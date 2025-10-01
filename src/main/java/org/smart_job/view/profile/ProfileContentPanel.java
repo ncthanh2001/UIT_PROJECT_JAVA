@@ -44,7 +44,7 @@ public class ProfileContentPanel extends JPanel {
         txtFirstName = new JTextField(20);
         txtLastName = new JTextField(20);
         txtEmail = new JTextField(20);
-        txtEmail.setEnabled(false); // Email không cho sửa
+        txtEmail.setEnabled(false); // Email is not editable
 
         // Country comboBox (giống RegisterView)
         String[] countries = Locale.getISOCountries();
