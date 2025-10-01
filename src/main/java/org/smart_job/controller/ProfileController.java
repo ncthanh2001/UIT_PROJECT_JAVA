@@ -45,7 +45,7 @@ public class ProfileController {
 
     private void saveProfile() {
         try {
-            // Lấy dữ liệu từ form
+            // Get data from form
             currentUser.setFirstName(view.getTxtFirstName().getText().trim());
             currentUser.setLastName(view.getTxtLastName().getText().trim());
             currentUser.setEmail(view.getTxtEmail().getText().trim());
