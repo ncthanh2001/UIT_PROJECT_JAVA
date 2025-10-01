@@ -24,7 +24,7 @@ public class ProfileController {
         // Fill user data into form
         fillForm();
 
-        // Gắn sự kiện nút Save
+        // Attach Save button event
         view.getSaveButton().addActionListener(e -> saveProfile());
     }
 
