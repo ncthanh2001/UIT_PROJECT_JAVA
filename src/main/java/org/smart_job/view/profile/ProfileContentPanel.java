@@ -93,7 +93,7 @@ public class ProfileContentPanel extends JPanel {
         add(formPanel, BorderLayout.CENTER);
     }
 
-    // Getter cho controller
+    // Getters for controller
     public JTextField getTxtFirstName() { return txtFirstName; }
     public JTextField getTxtLastName() { return txtLastName; }
     public JTextField getTxtEmail() { return txtEmail; }
