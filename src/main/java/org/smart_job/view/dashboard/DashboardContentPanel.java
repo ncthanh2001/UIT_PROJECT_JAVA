@@ -61,7 +61,7 @@ public class DashboardContentPanel extends JPanel{
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Welcome message
-        titleLabel = new JLabel("Chào mừng chờ lại, User!");
+        titleLabel = new JLabel("Chào mừng trở lại, User!");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
         titleLabel.setForeground(TEXT_PRIMARY);
 
