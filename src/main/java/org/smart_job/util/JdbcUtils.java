@@ -1,5 +1,9 @@
-package org.smart_job.ulties;
+package org.smart_job.util;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.stream.Collectors;
 
 public class JdbcUtils {
 
@@ -7,12 +11,79 @@ public class JdbcUtils {
     private static final String USER = "root";
     private static final String PASSWORD = "123456";
 
+    ///
+    /// - Dùng để khởi tạo Database
+    ///
+    /// - Sau khi chạy có thể comment
+    ///
+    /// Lưu ý: chỉ nên chạy 1 lần
+    ///
+    public static void initDB() {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement()) {
+
+            // Load SQL file
+            InputStream is = JdbcUtils.class.getClassLoader().getResourceAsStream("sql/create_table.sql");
+            if (is == null) {
+                throw new RuntimeException("Cannot find create_table.sql");
+            }
+
+            String sql = new BufferedReader(new InputStreamReader(is))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
+
+            // Chia các câu lệnh bằng dấu ;
+            for (String s : sql.split(";")) {
+                if (!s.trim().isEmpty()) {
+                    stmt.execute(s);
+                }
+            }
+
+            System.out.println("Database: Tables initialized!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    ///
+    /// - Dùng để seed data cho các entity (Job, Jobs, JobSkills)
+    ///
+    /// - Mỗi lần chạy sẽ xóa toàn bộ data của các entity (Job, Jobs, JobSkills) và seed
+    ///
+    public static void seedJobsData() {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement()) {
+
+            InputStream is = JdbcUtils.class.getClassLoader().getResourceAsStream("sql/seed_data.sql");
+            if (is == null) {
+                throw new RuntimeException("Cannot find seed_data.sql");
+            }
+
+            String sql = new BufferedReader(new InputStreamReader(is))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
+
+            for (String s : sql.split(";")) {
+                if (!s.trim().isEmpty()) {
+                    stmt.execute(s);
+                }
+            }
+
+            System.out.println("Database: Seed (Job, Jobs, JobSkills) completed!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // open connection
     public static Connection getConnection() throws SQLException {
         Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
         conn.setAutoCommit(false);
         return conn;
     }
+
     // commit transaction
     public static void commit(Connection conn) {
         if (conn != null) {

@@ -6,6 +6,7 @@ import org.smart_job.entity.User;
 import java.util.List;
 
 public interface UserService {
+    Response<User> login(User user);
     Response<User> register(User user);
     Response<User>  updateProfile(User user);
     Response<Boolean>  deleteUser(Integer id);
